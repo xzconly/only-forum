@@ -102,25 +102,3 @@ class User(db.Model, ModelMixin):
             self.save()
         else:
             return '请输入正确的用户名和密码'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

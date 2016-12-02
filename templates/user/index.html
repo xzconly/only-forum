@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user index</title>
+</head>
+<body>
+    <form action="{{ url_for('.add') }}" method="post">
+        <input type="hidden" name="xfrs" value="{{ xfrs }}">
+        <input name="username">
+        <button>add</button>
+    </form>
+    {% for u in user_list %}
+    <div>
+        {{ u.id }} : {{ u.username | safe }}
+        <a href="{{ url_for('.delete', id=u.id) }}">删除</a>
+    </div>
+    {% endfor %}
+</body>
+</html>
+<!--xsrf=d40a58205d884331aa7f2a7304ad6345&-->
+<!--password=18372&-->
+<!--phone_num=13008900987-->

@@ -9,6 +9,7 @@ class User(db.Model, ModelMixin):
     username = db.Column(db.String(30))
     password = db.Column(db.String(50))
     email = db.Column(db.String(30))
+    avatar = db.Column(db.String(255))
     qq = db.Column(db.String(20))
     signature = db.Column(db.String(255))
     credit = db.Column(db.Integer, default=0)
@@ -25,9 +26,11 @@ class User(db.Model, ModelMixin):
         self.username = form.get('username', '')
         self.password = form.get('password', '')
         self.email = form.get('email', '')
+        self.avatar = form.get('avatar', '')
         self.qq = form.get('qq', '')
         self.signature = form.get('signature', '')
         self.created_time = utc()
+        self.updated_time = utc()
 
     def sha1ed_password(self, pwd):
         """
@@ -87,18 +90,55 @@ class User(db.Model, ModelMixin):
         return status, msgs
 
     def validate_auth(self, form):
+        msgs = []
         username = form.get('username', '')
         password = form.get('password', '')
         username_equals = username == self.username
         password_equals = password == self.password
-        return username_equals and password_equals
+        status = username_equals and password_equals
+        if not status:
+            message = '用户名或密码错误'
+            msgs.append(message)
+        return status, msgs
 
-    def _update(self, form):
+    def valid_password(self, form):
+        """
+        验证修改的 新密码
+        """
+        msgs = []
+        new_password = form.get('new_password', '')
+        confirm_password = form.get('confirm_password', '')
+        valid_password_len = len(new_password) >= 6
+        valid_confirm_password = new_password == confirm_password
+        if not valid_password_len:
+            message = '新密码长度不小于 6'
+            msgs.append(message)
+        elif not valid_confirm_password:
+            message = '两次输入的密码不一致'
+            msgs.append(message)
+        status = valid_password_len and valid_confirm_password
+        return status, msgs
+
+    def _update_password(self, form):
         """
         修改密码
         """
-        if self.validate_auth(form):
-            self.password = form.get('new_password', self.password)
-            self.save()
+        auth_status, auth_msgs = self.validate_auth(form)
+        confirm_status, confirm_msgs = self.valid_password(form)
+        if auth_status:
+            if confirm_status:
+                self.password = form.get('new_password', self.password)
+                self.save()
+            else:
+                return confirm_msgs
         else:
-            return '请输入正确的用户名和密码'
+            return auth_msgs
+
+    def _update(self, form):
+        for key in form:
+            if key in self.__dict__:
+                updated_value = form.get(key, '')
+                if updated_value != '':
+                    setattr(self, key, updated_value)
+        self.updated_time = utc()
+        self.save()

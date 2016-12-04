@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{# extends 必须放在文件的第一句 #}
+
+{# 直接写内容 #}
+{% block title %}topics{% endblock %}
+
+{# 各个 block 的顺序无所谓 #}
+{% block top %}
+{% endblock %}
+
+{% block scripts %}
+    {# super表示不覆盖父模板该block内容 #}
+    {{ super() }}
+    <link href="//cdn.bootcss.com/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
+    {% for topic in topics %}
+    <a href="{{ url_for('topic.detail', model_id=topic.id) }}">
+    <div>{{ topic.title }} {{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</div>
+    </a>
+    {% endfor %}
+    <p><a href="{{ url_for('topic.new') }}" class="btn btn-primary btn-lg active" role="button">发表主题</a></p>
+{% endblock %}
+
+{# footer 不写，则会直接用父模板中的 block footer 内容 #}

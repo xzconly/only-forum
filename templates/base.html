@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block scripts %}
+        <link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.css" rel="stylesheet">
+        <script src="/static/js/jquery-3.0.0.js"></script>
+    {% endblock %}
+</head>
+<body>
+<div id="base-top">
+    {% block top %}
+        <div class="row">
+            <div class="col-xs-2">
+                <span><a href="{{ url_for('index.index') }}">首页</a></span>
+            </div>
+            <div class="col-xs-2">
+                <span><a href="{{ url_for('question.index') }}">问答</a></span>
+            </div>
+            <div class="col-xs-2">
+                <span><a href="{{ url_for('topic.index') }}">论坛</a></span>
+            </div>
+            <div class="col-xs-6">
+                <span><a href="#">个人</a></span>
+            </div>
+        </div>
+    {% endblock %}
+</div>
+<div id="base-content">
+    {% block content %}
+        公共内容
+    {% endblock %}
+</div>
+<div id="base-bottom">
+    {% block footer %}
+        <div class="wrapper row5">
+            <div id="copyright" class="hoc clear">
+                <!-- ################################################################################################ -->
+                <p class="fl_left">Copyright &copy; 2016 - All Rights Reserved - <a href="http://zconly.cc" target="_blank">zconly.cc</a></p>
+                <!-- ################################################################################################ -->
+            </div>
+        </div>
+    {% endblock %}
+</div>
+</body>
+</html>

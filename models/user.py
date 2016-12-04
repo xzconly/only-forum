@@ -131,7 +131,7 @@ class User(db.Model, ModelMixin):
         status = valid_password_len and valid_confirm_password
         return status, msgs
 
-    def _update_password(self, form):
+    def update_password(self, form):
         """
         修改密码
         """
@@ -140,7 +140,7 @@ class User(db.Model, ModelMixin):
         if auth_status:
             if confirm_status:
                 self.password = form.get('new_password', self.password)
-                self.password = self.salted_password(self.password  )
+                self.password = self.salted_password(self.password)
                 self.save()
             else:
                 return ','.join(confirm_msgs)

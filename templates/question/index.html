@@ -16,12 +16,16 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    {% for question in questions %}
-    <a href="{{ url_for('question.detail', model_id=question.id) }}">
-    <div>{{ question.title }} {{ question.user.username }} 更新于 {{ question.updated_time | date_time }}</div>
-    </a>
-    {% endfor %}
-    <p><a href="{{ url_for('question.new') }}" class="btn btn-primary btn-lg active" role="button">我要提问</a></p>
+    <table class="table">
+        {% for question in questions %}
+        <tr class="warning">
+            <td><a href="{{ url_for('question.detail', model_id=question.id) }}">{{ question.title }}</a></td>
+            <td><a href="{{ url_for('user.profile', model_id=question.user.id) }}">{{ question.user.username }}</a></td>
+            <td>{{ question.updated_time | date_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('question.new') }}" class="btn btn-primary" role="button">我要提问</a></p>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

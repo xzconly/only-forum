@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     {% block scripts %}
-        <link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.css" rel="stylesheet">
+        <!--<link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.css" rel="stylesheet">-->
+        <!-- Bootstrap core CSS -->
+        <link href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Optional Bootstrap Theme -->
+        <link href="data:text/css;charset=utf-8," data-href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" rel="stylesheet" id="bs-theme-stylesheet">
         <script src="/static/js/jquery-3.0.0.js"></script>
     {% endblock %}
 </head>
@@ -21,8 +25,11 @@
             <div class="col-xs-2">
                 <span><a href="{{ url_for('topic.index') }}">论坛</a></span>
             </div>
-            <div class="col-xs-6">
-                <span><a href="#">个人</a></span>
+            <div class="col-xs-2">
+                <span><a href="{{ url_for('node.index') }}">版块</a></span>
+            </div>
+            <div class="col-xs-4">
+                <span><a href="{{ url_for('user.profile') }}">个人</a></span>
             </div>
         </div>
     {% endblock %}
@@ -37,7 +44,7 @@
         <div class="wrapper row5">
             <div id="copyright" class="hoc clear">
                 <!-- ################################################################################################ -->
-                <p class="fl_left">Copyright &copy; 2016 - All Rights Reserved - <a href="http://zconly.cc" target="_blank">zconly.cc</a></p>
+                <p class="fl_left">Copyright &copy; 2016 - All Rights Reserved - <a href="#">zconly.cc</a></p>
                 <!-- ################################################################################################ -->
             </div>
         </div>

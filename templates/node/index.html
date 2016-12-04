@@ -16,16 +16,17 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    {% for node in nodes %}
-    <a href="{{ url_for('node.detail', model_id=node.id) }}">
-    <div>
-        {{ node.name }}
-        <a href="{{ url_for('node.edit_view', model_id=node.id) }}">修改</a>
-        <a href="{{ url_for('node.delete', model_id=node.id) }}">删除</a>
-    </div>
-    </a>
-    {% endfor %}
-    <p><a href="{{ url_for('node.new') }}" class="btn btn-primary btn-lg active" role="button">添加版块</a></p>
+    <table class="table">
+        {% for node in nodes %}
+        <tr class="warning">
+            <td><a href="{{ url_for('node.detail', model_id=node.id) }}">{{ node.name }}</a></td>
+            <td><a href="{{ url_for('node.edit_view', model_id=node.id) }}">修改</a></td>
+            <td><a href="{{ url_for('node.delete', model_id=node.id) }}">删除</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="{{ url_for('node.new') }}" class="btn btn-primary" role="button">添加版块</a></p>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

@@ -16,7 +16,9 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <p><div>Hello Only</div></p>
+    <div>
+    <p><h1>Hello Only</h1></p>
+    </div>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

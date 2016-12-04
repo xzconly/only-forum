@@ -12,17 +12,20 @@
 {% block scripts %}
     {# super表示不覆盖父模板该block内容 #}
     {{ super() }}
-    <link href="//cdn.bootcss.com/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    {% for topic in topics %}
-    <a href="{{ url_for('topic.detail', model_id=topic.id) }}">
-    <div>{{ topic.title }} {{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</div>
-    </a>
-    {% endfor %}
-    <p><a href="{{ url_for('topic.new') }}" class="btn btn-primary btn-lg active" role="button">发表主题</a></p>
+    <table class="table">
+        {% for topic in topics %}
+        <tr class="warning">
+            <td><a href="{{ url_for('topic.detail', model_id=topic.id) }}">{{ topic.title }}</a></td>
+            <td><a href="{{ url_for('user.profile', model_id=topic.user.id) }}">{{ topic.user.username }}</a></td>
+            <td>{{ topic.updated_time | date_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('topic.new') }}" class="btn btn-primary" role="button">发表主题</a></p>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

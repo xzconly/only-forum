@@ -16,19 +16,48 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <div>{{ question.title }}</div>
-    <div>{{ question.expection }}</div>
-    <div>{{ question.thinking }}</div>
-    <div>{{ question.procedure }}</div>
-    <div>{{ question.problems }}</div>
-    <div>{{ question.code }}</div>
-    {% for answer in question.answers %}
-    <div>{{ answer.content }} {{ answer.user.username }} 更新于 {{ answer.updated_time | date_time }}</div>
-    {% endfor %}
+    <table class="table">
+        <tr class="warning">
+            <td>问题</td>
+            <td>{{ question.title }}</td>
+        </tr>
+        <tr class="warning">
+            <td>需要完成的需求以及目的</td>
+            <td>{{ question.expection }}</td>
+        </tr>
+        <tr class="warning">
+            <td>想法或思路</td>
+            <td>{{ question.thinking }}</td>
+        </tr>
+        <tr class="warning">
+            <td>具体的实现过程</td>
+            <td>{{ question.procedure }}</td>
+        </tr>
+        <tr class="warning">
+            <td>遇到的问题</td>
+            <td>{{ question.problems }}</td>
+        </tr>
+        <tr class="warning">
+            <td>实现代码</td>
+            <td>{{ question.code }}</td>
+        </tr>
+    </table>
+
+    <table class="table">
+        <tr><th><h2>答案列表</h2></th></tr>
+        {% for answer in question.answers %}
+        <tr class="danger">
+            <td>{{ answer.content }}</td>
+            <td>{{ answer.user.username }}</td>
+            <td>{{ answer.updated_time | date_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
     <form class="form-horizontal" role="form" action="{{ url_for('question.add_answer') }}" method="post">
         <div class="form-group">
             <div class="col-sm-10">
-                <textarea class="form-control" rows="5" name="content" placeholder="答案"></textarea>
+                <textarea class="form-control" rows="5" name="content" placeholder="编写答案"></textarea>
             </div>
         </div>
         <div class="form-group">
@@ -42,7 +71,7 @@
             </div>
         </div>
         <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
+        <div class="col-sm-12">
             <button type="submit" class="btn btn-primary">我要回答</button>
         </div>
       </div>

@@ -22,7 +22,6 @@ def current_user():
 
 # 这个参数 f 实际上就是路由函数
 def login_required(f):
-    print('login required')
     @wraps(f)
     def function(*args, **kwargs):
         print('current user check', current_user())

@@ -17,12 +17,27 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <p>用户名： <span>{{ user.username }}</span></p>
-    <p>邮箱： <span>{{ user.email }}</span></p>
-    <p>qq： <span>{{ user.qq }}</span></p>
-    <p>签名： <span>{{ user.signature }}</span></p>
-    <p><a href="{{ url_for('user.edit', model_id=user.id) }}" class="btn btn-primary btn-lg active" role="button">修改个人资料</a></p>
-    <p><a href="{{ url_for('user.edit_password', model_id=user.id) }}" class="btn btn-primary btn-lg active" role="button">修改密码</a></p>
+    <table class="table">
+        <tr class="warning">
+            <td>用户名: </td>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr class="warning">
+            <td>邮箱: </td>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr class="warning">
+            <td>qq: </td>
+            <td>{{ user.qq }}</td>
+        </tr>
+        <tr class="warning">
+            <td>签名: </td>
+            <td>{{ user.signature }}</td>
+        </tr>
+    </table>
+
+    <p><a href="{{ url_for('user.edit', model_id=user.id) }}" class="btn btn-primary" role="button">修改个人资料</a></p>
+    <p><a href="{{ url_for('user.edit_password', model_id=user.id) }}" class="btn btn-primary   " role="button">修改密码</a></p>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

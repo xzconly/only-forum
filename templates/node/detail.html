@@ -16,11 +16,25 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <div>{{ node.title }}</div>
-    <div>{{ node.content }}</div>
-    {% for topic in node.topics %}
-    <div>{{ topic.title }} {{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</div>
-    {% endfor %}
+    <table class="table">
+        <tr class="success">
+            <th>版块名称：</th>
+            <th>{{ node.name }}</th>
+            <th></th>
+        </tr>
+        <tr class="success">
+            <th>版块内容：</th>
+            <th>{{ node.content }}</th>
+            <th></th>
+        </tr>
+        {% for topic in node.topics %}
+        <tr class="warning">
+            <td><a href="{{ url_for('topic.detail', model_id=topic.id) }}">{{ topic.title }}</a></td>
+            <td><a href="{{ url_for('user.profile', model_id=topic.user.id) }}">{{ topic.user.username }}</a></td>
+            <td>{{ topic.updated_time | date_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

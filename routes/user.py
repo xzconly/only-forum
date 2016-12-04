@@ -52,12 +52,13 @@ def edit(model_id):
     user = Model.query.get(model_id)
     return render_template('/user/edit_profile.html', user=user)
 
+
 @main.route('/update/<int:model_id>', methods=['POST'])
 @login_required
 def update(model_id):
     form = request.form
     Model.update(model_id, form)
-    return redirect(url_for('.profile', model_id=model_id))
+    return redirect(url_for('.profile'))
 
 
 @main.route('/edit_password/<int:model_id>')
@@ -72,14 +73,14 @@ def edit_password(model_id):
 def update_password(model_id):
     form = request.form
     user = Model.query.get(model_id)
-    result = user._update_password(form)
+    result = user.update_password(form)
     if result is not None:
         return result
-    return redirect(url_for('.profile', model_id=model_id))
+    return redirect(url_for('.profile'))
 
 
-@main.route('/profile/<int:model_id>')
+@main.route('/profile')
 @login_required
-def profile(model_id):
-    user = Model.query.get(model_id)
+def profile():
+    user = current_user()
     return render_template('/user/profile.html', user=user)

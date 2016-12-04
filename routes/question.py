@@ -1,14 +1,13 @@
-from models.topic import Topic
-from models.comment import Comment
-from models.node import Node
+from models.question import Question
+from models.answer import Answer
 from routes import *
 
 from utils import log
 
 
-main = Blueprint('topic', __name__)
+main = Blueprint('question', __name__)
 
-Model = Topic
+Model = Question
 
 
 def require_login():
@@ -26,37 +25,33 @@ main.before_request(require_login)
 
 @main.route('/')
 def index():
-    model_list = Model.query.all()
-    return render_template('/topic/index.html', topics=model_list)
+    model_list = Model.query.filter_by(deleted=0).all()
+    return render_template('/question/index.html', questions=model_list)
 
 
 @main.route('/add')
 def new():
     u = current_user()
-    nodes = Node.query.filter_by(deleted=0).all()
-    return render_template('/topic/add.html', user_id=u.id, board=nodes)
+    return render_template('/question/add.html', user_id=u.id)
 
 
 @main.route('/add', methods=['POST'])
 def add():
     form = request.form
     m = Model.new(form)
-    user = m.user
-    user.credit += 10
-    user.save()
     return redirect(url_for('.index'))
 
 
-@main.route('/topic/<int:model_id>')
+@main.route('/detail/<int:model_id>')
 def detail(model_id):
     u = current_user()
     model = Model.query.get(model_id)
-    return render_template('/topic/detail.html', topic=model, user_id=u.id)
+    return render_template('/question/detail.html', question=model, user_id=u.id)
 
 
-@main.route('/add_comment', methods=['POST'])
-def add_comment():
+@main.route('/add_answer', methods=['POST'])
+def add_answer():
     form = request.form
-    topic_id = int(form.get('topic_id', ''))
-    Comment.new(form)
-    return redirect(url_for('.detail', model_id=topic_id))
+    question_id = int(form.get('question_id', ''))
+    Answer.new(form)
+    return redirect(url_for('.detail', model_id=question_id))

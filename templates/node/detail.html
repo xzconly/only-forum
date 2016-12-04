@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{# extends 必须放在文件的第一句 #}
+
+{# 直接写内容 #}
+{% block title %}node detail{% endblock %}
+
+{# 各个 block 的顺序无所谓 #}
+{% block top %}
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {# super表示不覆盖父模板该block内容 #}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
+    <div>{{ node.title }}</div>
+    <div>{{ node.content }}</div>
+    {% for topic in node.topics %}
+    <div>{{ topic.title }} {{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</div>
+    {% endfor %}
+{% endblock %}
+
+{# footer 不写，则会直接用父模板中的 block footer 内容 #}

@@ -18,7 +18,8 @@ class Answer(db.Model, ModelMixin):
 
     def __init__(self, form):
         self.content = form.get('content', '')
-        self.question_id = form.get('question_id', '')
+        self.question_id = int(form.get('question_id', 0))
+        self.user_id = int(form.get('user_id', 0))
         question = Question.query.get(self.question_id)
         question.updated_time = utc()
 

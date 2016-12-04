@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{# extends 必须放在文件的第一句 #}
+
+{# 直接写内容 #}
+{% block title %}index{% endblock %}
+
+{# 各个 block 的顺序无所谓 #}
+{% block top %}
+{{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {# super表示不覆盖父模板该block内容 #}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
+    <p><div>Hello Only</div></p>
+{% endblock %}
+
+{# footer 不写，则会直接用父模板中的 block footer 内容 #}

@@ -21,7 +21,8 @@ class Topic(db.Model, ModelMixin):
     def __init__(self, form):
         self.title = form.get('title', '')
         self.content = form.get('content', '')
-        self.board_id = form.get('board_id', 0)
+        self.board_id = int(form.get('board_id', 0))
+        self.user_id = int(form.get('user_id', 0))
 
     def _update(self, form):
         self.title = form.get('title', '')

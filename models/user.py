@@ -1,6 +1,8 @@
 from . import ModelMixin, utc
 from . import db
 
+from utils import log
+
 
 class User(db.Model, ModelMixin):
     __tablename__ = 'users'
@@ -13,7 +15,10 @@ class User(db.Model, ModelMixin):
     qq = db.Column(db.String(20))
     signature = db.Column(db.String(255))
     credit = db.Column(db.Integer, default=0)
-    created_time = db.Column(db.Integer)
+    role = db.Column(db.Integer, default=10)
+    created_time = db.Column(db.Integer, default=utc())
+    updated_time = db.Column(db.Integer, default=utc())
+
 
     # 定义关系
     topics = db.relationship('Topic', backref='user')
@@ -44,13 +49,17 @@ class User(db.Model, ModelMixin):
         """
         对 sha1 加密后的密码， 加盐
         """
-        salt = 'a32qfs342w2fsf23q323f'
+        import config
+        salt = config.salt
         sha1_pwd = self.sha1ed_password(pwd)
         salt_pwd = self.sha1ed_password(sha1_pwd + salt)
         return salt_pwd
 
     def valid_username(self):
         return User.query.filter_by(username=self.username).first() is None
+
+    def is_admin(self):
+        return self.role == 1
 
     def valid(self):
         """
@@ -70,6 +79,8 @@ class User(db.Model, ModelMixin):
             message = '密码长度不小于 6'
             msgs.append(message)
         status = valid_username and valid_username_len and valid_password_len
+        if status:
+            self.password = self.salted_password(self.password)
         return status, msgs
 
     def validate_login(self):
@@ -93,6 +104,7 @@ class User(db.Model, ModelMixin):
         msgs = []
         username = form.get('username', '')
         password = form.get('password', '')
+        password = self.salted_password(password)
         username_equals = username == self.username
         password_equals = password == self.password
         status = username_equals and password_equals
@@ -128,11 +140,12 @@ class User(db.Model, ModelMixin):
         if auth_status:
             if confirm_status:
                 self.password = form.get('new_password', self.password)
+                self.password = self.salted_password(self.password  )
                 self.save()
             else:
-                return confirm_msgs
+                return ','.join(confirm_msgs)
         else:
-            return auth_msgs
+            return ','.join(auth_msgs)
 
     def _update(self, form):
         for key in form:

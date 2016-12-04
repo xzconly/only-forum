@@ -2,22 +2,21 @@
 {# extends 必须放在文件的第一句 #}
 
 {# 直接写内容 #}
-{% block title %}add topic{% endblock %}
+{% block title %}add question{% endblock %}
 
 {# 各个 block 的顺序无所谓 #}
 {% block top %}
-<h1>添加主题</h1>
+    {{ super() }}
 {% endblock %}
 
 {% block scripts %}
     {# super表示不覆盖父模板该block内容 #}
     {{ super() }}
-    <link href="//cdn.bootcss.com/jquery-mobile/1.4.5/jquery.mobile.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <form class="form-horizontal" role="form" action="{{ url_for('topic.add') }}" method="post">
+    <form class="form-horizontal" role="form" action="{{ url_for('question.add') }}" method="post">
         <div class="form-group">
             <div class="col-sm-10">
                 <input type="hidden" class="form-control" name="user_id" value="{{ user_id }}">
@@ -25,26 +24,42 @@
         </div>
         <div class="form-group">
             <div class="col-sm-10">
-                <input type="text" class="form-control" name="title" placeholder="添加标题">
+                <input type="text" class="form-control" name="title" placeholder="标题">
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-10">
-                <textarea class="form-control" rows="5" name="content" placeholder="添加内容"></textarea>
+                <textarea class="form-control" rows="5" name="expection" placeholder="描述你需要完成的需求以及目的（目的就是为什么要做这个需求）"></textarea>
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-10">
-                <select class="form-control" name="board_id">
-                {% for b in board %}
-                    <option value="{{ b.id }}">{{ b.name }}</option>
-                {% endfor %}
-                </select>
+                <textarea class="form-control" rows="5" name="thinking" placeholder="描述你的想法或思路"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="5" name="procedure" placeholder="描述具体的实现过程"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="5" name="procedure" placeholder="描述具体的实现过程"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="5" name="problems" placeholder="描述遇到的问题，包括正确信息，报错信息或得到的不正确的信息"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="5" name="code" placeholder="有条件则贴出具体实现代码"></textarea>
             </div>
         </div>
         <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-primary">发表主题</button>
+            <button type="submit" class="btn btn-primary">提问</button>
         </div>
       </div>
     </form>

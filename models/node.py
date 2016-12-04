@@ -8,18 +8,25 @@ class Node(db.Model, ModelMixin):
     name = db.Column(db.String())
     content = db.Column(db.String())
     keywords = db.Column(db.String())
-    permit = db.Column(db.String())
-    master = db.Column(db.String())
+    permit = db.Column(db.Integer, default=0)
+    master = db.Column(db.Integer)
     parent_id = db.Column(db.Integer, default=0)
+    deleted = db.Column(db.Integer, default=0)
+    # 定义关系
     topics = db.relationship('Topic', backref='board')
 
     def __init__(self, form):
         self.name = form.get('name', '')
         self.content = form.get("content", '')
-        self.keywords = form.get("keywords", '板块')
-        self.master = form.get('master', '')
-        self.parent_id = form.get("parent_id", '')
-        self.permit = form.get("permit", '')
+        self.keywords = form.get("keywords", '版块')
+        self.master = form.get('master', 0)
+        self.parent_id = int(form.get("parent_id", 0))
+        self.permit = form.get("permit", 0)
 
     def _update(self, form):
-        pass
+        for key in form:
+            if key in self.__dict__:
+                updated_value = form.get(key, '')
+                if updated_value != '':
+                    setattr(self, key, updated_value)
+        self.save()

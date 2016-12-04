@@ -33,7 +33,7 @@ class ModelMixin(object):
 
     def save(self):
         db.session.add(self)
-        db.commit()
+        db.session.commit()
 
     def remove(self):
         # 逻辑删除

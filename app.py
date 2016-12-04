@@ -7,11 +7,27 @@ from models import db
 # 这里 import 具体的 Model 类是为了给 migrate 用
 # 如果不 import 那么无法迁移
 # 这是 SQLAlchemy 的机制
-# from models.user import User
+from models.user import User
+from models.topic import Topic
+from models.comment import Comment
+from models.question import Question
+from models.answer import Answer
+from models.node import Node
+
 
 
 app = Flask(__name__)
 manager = Manager(app)
+
+
+# 自定义过滤器
+# 过滤器的名字是函数名
+@app.template_filter()
+def date_time(timestamp):
+    import time
+    fmt = '%Y/%m/%d %H:%M:%S'
+    value = time.localtime(timestamp)
+    return time.strftime(fmt, value)
 
 
 def configured_app():
@@ -53,9 +69,20 @@ def register_routes(app):
     """
     在这个函数里面 import 并注册蓝图
     """
-    pass
-    # from routes.user import main as routes_user
-    # app.register_blueprint(routes_user, url_prefix='/user')
+    from routes.user import main as routes_user
+    app.register_blueprint(routes_user, url_prefix='/user')
+
+    from routes.index import main as routes_index
+    app.register_blueprint(routes_index)
+
+    from routes.topic import main as routes_topic
+    app.register_blueprint(routes_topic, url_prefix='/topic')
+
+    from routes.node import main as routes_node
+    app.register_blueprint(routes_node, url_prefix='/node')
+
+    from routes.question import main as routes_question
+    app.register_blueprint(routes_question, url_prefix='/question')
 
 
 # 自定义的命令行命令用来运行服务器

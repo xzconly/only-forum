@@ -19,7 +19,7 @@ class Question(db.Model, ModelMixin):
     problems = db.Column(db.Text())
     code = db.Column(db.Text())
     # 外键
-    user_id = db.Column(db.Integer, db.Foreign_key('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # 定义关系
     answers = db.relationship('Answer', backref='question')
 
@@ -30,6 +30,7 @@ class Question(db.Model, ModelMixin):
         self.procedure = form.get('procedure', '')
         self.problems = form.get('problems', '')
         self.code = form.get('code', '')
+        self.user_id = int(form.get('user_id'))
 
     def _update(self, form):
         for key in form:

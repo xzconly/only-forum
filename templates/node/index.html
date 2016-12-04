@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{# extends 必须放在文件的第一句 #}
+
+{# 直接写内容 #}
+{% block title %}nodes{% endblock %}
+
+{# 各个 block 的顺序无所谓 #}
+{% block top %}
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {# super表示不覆盖父模板该block内容 #}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
+    {% for node in nodes %}
+    <a href="{{ url_for('node.detail', model_id=node.id) }}">
+    <div>
+        {{ node.name }}
+        <a href="{{ url_for('node.edit_view', model_id=node.id) }}">修改</a>
+        <a href="{{ url_for('node.delete', model_id=node.id) }}">删除</a>
+    </div>
+    </a>
+    {% endfor %}
+    <p><a href="{{ url_for('node.new') }}" class="btn btn-primary btn-lg active" role="button">添加版块</a></p>
+{% endblock %}
+
+{# footer 不写，则会直接用父模板中的 block footer 内容 #}

@@ -87,6 +87,7 @@ def profile():
 
 
 @main.route('/upload', methods=['POST'])
+@login_required
 def upload_file():
     import json
     import config
@@ -114,6 +115,7 @@ def upload_file():
 
 
 @main.route('/uploads/<filename>')
+@login_required
 def uploaded_file(filename):
     # 用这个函数直接返回文件的响应
     import config

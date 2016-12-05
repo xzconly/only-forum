@@ -17,10 +17,15 @@
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
     <table class="table">
+        <tr>
+        {% for b in boards %}
+            <th><a href="{{ url_for('node.detail', model_id=b.id) }}">{{ b.name }}</a></th>
+        {% endfor %}
+        </tr>
         {% for topic in topics %}
         <tr class="warning">
             <td><a href="{{ url_for('topic.detail', model_id=topic.id) }}">{{ topic.title }}</a></td>
-            <td><a href="{{ url_for('user.profile', model_id=topic.user.id) }}">{{ topic.user.username }}</a></td>
+            <td><a href="{{ url_for('user.profile', model_id=topic.user.id) }}"><img width="50" height="50" src="{{ url_for('user.uploaded_file', filename=topic.user.avatar) }}" > {{ topic.user.username }}</a></td>
             <td>{{ topic.updated_time | date_time }}</td>
         </tr>
         {% endfor %}

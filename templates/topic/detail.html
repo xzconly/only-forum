@@ -19,12 +19,15 @@
     <table class="table">
         <tr class="warning">
             <td>{{ topic.title }}</td>
+            <td></td>
         </tr>
         <tr class="warning">
-            <td>{{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</td>
+            <td>所在版块：<a href="{{ url_for('node.detail', model_id=topic.board.id) }}">{{ topic.board.name }}</a></td>
+            <td><img width="50" height="50" src="{{ url_for('user.uploaded_file', filename=topic.user.avatar) }}" > {{ topic.user.username }} 更新于 {{ topic.updated_time | date_time }}</td>
         </tr>
         <tr class="warning">
             <td>{{ topic.content }}</td>
+            <td></td>
         </tr>
     </table>
 

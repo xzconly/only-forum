@@ -20,7 +20,7 @@
         {% for question in questions %}
         <tr class="warning">
             <td><a href="{{ url_for('question.detail', model_id=question.id) }}">{{ question.title }}</a></td>
-            <td><a href="{{ url_for('user.profile', model_id=question.user.id) }}">{{ question.user.username }}</a></td>
+            <td><a href="{{ url_for('user.profile', model_id=question.user.id) }}"><img width="50" height="50" src="{{ url_for('user.uploaded_file', filename=question.user.avatar) }}" > {{ question.user.username }}</a></td>
             <td>{{ question.updated_time | date_time }}</td>
         </tr>
         {% endfor %}

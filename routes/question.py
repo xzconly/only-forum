@@ -10,16 +10,9 @@ main = Blueprint('question', __name__)
 Model = Question
 
 
-def require_login():
-    u = current_user()
-    if u is None:
-        return redirect(url_for('user.login'))
-
-
-
 # 一次性给蓝图中的每个路由加上管理权限验证
 # 这样就不用手动去给每个函数分别加这个验证了
-# (login_required 的方式就是手动一个个加)
+# (@login_required 的方式就是手动一个个加)
 main.before_request(require_login)
 
 
@@ -42,7 +35,7 @@ def add():
     return redirect(url_for('.index'))
 
 
-@main.route('/detail/<int:model_id>')
+@main.route('/<int:model_id>')
 def detail(model_id):
     u = current_user()
     model = Model.query.get(model_id)

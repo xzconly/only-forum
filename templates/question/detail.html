@@ -41,6 +41,10 @@
             <td>实现代码</td>
             <td>{{ question.code }}</td>
         </tr>
+        <tr class="warning">
+            <td>{{ question.user.username }} 更新于 {{ question.updated_time | date_time }}</td>
+            <td></td>
+        </tr>
     </table>
 
     <table class="table">

@@ -1,4 +1,3 @@
-from models.user import User
 from routes import *
 
 from utils import log
@@ -87,7 +86,6 @@ def profile():
 
 
 @main.route('/upload', methods=['POST'])
-@login_required
 def upload_file():
     import json
     import config
@@ -95,9 +93,9 @@ def upload_file():
     # uploaded 是上传时候的文件名
     f = request.files.get('uploaded')
     if f:
-        filename = f.filename
-        user = current_user()
-        filename = str(user.id) + '.' + filename.split('.')[-1]
+        user_id = get_user_id()
+        file_name = str(user_id)
+        filename = file_name + '.' + f.filename.split('.')[-1]
         path = config.uploads_avatar_dir + filename
         f.save(path)
         msg_dict = dict(
@@ -115,9 +113,7 @@ def upload_file():
 
 
 @main.route('/uploads/<filename>')
-@login_required
 def uploaded_file(filename):
     # 用这个函数直接返回文件的响应
     import config
     return flask.send_from_directory(config.uploads_avatar_dir, filename)
-

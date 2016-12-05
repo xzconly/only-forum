@@ -7,6 +7,7 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 from flask import url_for
+from sqlalchemy import desc
 
 from functools import wraps
 
@@ -59,3 +60,16 @@ def require_admin():
     # u 不存在或者不是管理员
     if u is None or not u.is_admin():
         flask.abort(404)
+
+
+def get_user_id():
+    """
+    获取 user_id
+    如果当前未登录，返回 最新用户的 id + 1 值
+    """
+    user = current_user()
+    if user is not None:
+        return user.id
+    else:
+        last_user = User.query.order_by(desc(User.id)).first()
+        return last_user.id + 1

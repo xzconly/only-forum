@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 logs/
+uploads/
 migrations/
 __pycache__/
 models/__pycache__/

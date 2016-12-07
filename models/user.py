@@ -2,8 +2,6 @@ from . import ModelMixin, utc
 from . import db
 from flask_login import UserMixin
 
-from utils import log
-
 
 class User(db.Model, ModelMixin, UserMixin):
     __tablename__ = 'users'
@@ -21,12 +19,31 @@ class User(db.Model, ModelMixin, UserMixin):
     created_time = db.Column(db.Integer, default=utc())
     updated_time = db.Column(db.Integer, default=utc())
 
-
     # 定义关系
     topics = db.relationship('Topic', backref='user')
     comments = db.relationship('Comment', backref='user')
     questions = db.relationship('Question', backref='user')
     answers = db.relationship('Answer', backref='user')
+
+    @classmethod
+    def sha1ed_password(cls, pwd):
+        """
+        sha1 加密密码
+        """
+        import hashlib
+        s = hashlib.sha1(pwd.encode('ascii'))
+        return s.hexdigest()
+
+    @classmethod
+    def salted_password(cls, pwd):
+        """
+        对 sha1 加密后的密码， 加盐
+        """
+        import config
+        salt = config.salt
+        sha1_pwd = cls.sha1ed_password(pwd)
+        salt_pwd = cls.sha1ed_password(sha1_pwd + salt)
+        return salt_pwd
 
     def __init__(self, form):
         super(User, self).__init__()
@@ -39,24 +56,6 @@ class User(db.Model, ModelMixin, UserMixin):
         self.signature = form.get('signature', '')
         self.created_time = utc()
         self.updated_time = utc()
-
-    def sha1ed_password(self, pwd):
-        """
-        sha1 加密密码
-        """
-        import hashlib
-        s = hashlib.sha1(pwd.encode('ascii'))
-        return s.hexdigest()
-
-    def salted_password(self, pwd):
-        """
-        对 sha1 加密后的密码， 加盐
-        """
-        import config
-        salt = config.salt
-        sha1_pwd = self.sha1ed_password(pwd)
-        salt_pwd = self.sha1ed_password(sha1_pwd + salt)
-        return salt_pwd
 
     def is_admin(self):
         return self.role == 1

@@ -10,34 +10,29 @@ main = Blueprint('user', __name__)
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        data_form = {}
-        data_form['username'] = form.username.data
-        data_form['password'] = form.password.data
-        data_form['email'] = form.email.data
-        user = User(data_form)
-        user.password = user.salted_password(user.password)
+    register_form = RegistrationForm()
+    if register_form.validate_on_submit():
+        form = request.form
+        user = User(form)
+        user.password = User.salted_password(user.password)
         user.save()
         return redirect(url_for('.login'))
-    return render_template('/user/register.html', form=form)
+    return render_template('/user/register.html', form=register_form)
 
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        data_form = {}
-        data_form['username'] = form.username.data
-        data_form['password'] = form.password.data
-        u = User(data_form)
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        form = request.form
+        u = User(form)
         if u.validate_login():
             user = User.query.filter_by(username=u.username).first()
-            login_user(user, form.remember_me.data)
+            login_user(user, login_form.remember_me.data)
             return redirect(url_for('index.index'))
         else:
             flash('用户名或密码错误')
-    return render_template('/user/login.html', form=form)
+    return render_template('/user/login.html', form=login_form)
 
 
 @main.route('/edit/<int:model_id>')
@@ -52,7 +47,7 @@ def edit(model_id):
 def update(model_id):
     form = request.form
     User.update(model_id, form)
-    return redirect(url_for('.profile'))
+    return redirect(url_for('.profile', model_id=model_id))
 
 
 @main.route('/edit_password/<int:model_id>')
@@ -73,10 +68,9 @@ def update_password(model_id):
     return redirect(url_for('.profile'))
 
 
-@main.route('/profile')
-@login_required
-def profile():
-    user = current_user()
+@main.route('/profile/<int:user_id>')
+def profile(user_id):
+    user = User.query.get(user_id)
     return render_template('/user/profile.html', user=user)
 
 
@@ -96,8 +90,8 @@ def upload_file():
         msg_dict = dict(
             msg='头像上传成功',
             status=1,
-            filename = filename,
-            img_url = url_for('.uploaded_file', filename=filename),
+            filename=filename,
+            img_url=url_for('.uploaded_file', filename=filename),
         )
     else:
         msg_dict = dict(

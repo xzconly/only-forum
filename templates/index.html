@@ -8,11 +8,13 @@
 
 {% block content %}
     {# 没有 super 的时候会用子模板内容覆盖父模板中该 block 的内容 #}
-    <p><h1>Hello,
-        {% if current_user.is_authenticated %}
-            {{ current_user.username }}
-        {% endif %}!
-    </h1></p>
+    <div>
+        <h1>Hello,
+            {% if current_user.is_authenticated %}
+                {{ current_user.username }}
+            {% endif %}!
+        </h1>
+    </div>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

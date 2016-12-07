@@ -19,23 +19,10 @@ from models.answer import Answer
 from models.node import Node
 
 
-
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 manager = Manager(app)
 
-login_manager = LoginManager()
-login_manager.session_protection = 'strong'
-login_manager.login_view = 'user.login'
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    log(user_id)
-    return User.query.get(user_id)
-
-
-login_manager.init_app(app)
 
 # 自定义过滤器
 # 过滤器的名字是函数名
@@ -45,6 +32,21 @@ def date_time(timestamp):
     fmt = '%Y/%m/%d %H:%M:%S'
     value = time.localtime(timestamp)
     return time.strftime(fmt, value)
+
+
+@app.template_filter()
+def thumb_img(img, img_size=100):
+    from PIL import Image
+    from flask import url_for
+    import os
+
+    size = img_size, img_size
+    file, ext = os.path.splitext(img)
+    im = Image.open(img)
+    im.thumbnail(size)
+    thumb_img_name = file + '_thumb' + ext
+    im.save(thumb_img_name)
+    return url_for('user.uploaded_file', filename=thumb_img_name)
 
 
 def configured_app():
@@ -57,12 +59,26 @@ def configured_app():
     app.config['SECRET_KEY'] = config.config_secret_key
     # 初始化 db
     db.init_app(app)
+    # 初始化 LoginManager
+    configure_login(app)
     # 注册路由
     register_routes(app)
     # 配置日志
     configure_log(app)
     # 返回配置好的 app 实例
     return app
+
+
+def configure_login(app):
+    login_manager = LoginManager()
+    login_manager.session_protection = 'strong'
+    login_manager.login_view = 'user.login'
+
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
 
 def configure_log(app):

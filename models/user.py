@@ -1,16 +1,18 @@
 from . import ModelMixin, utc
 from . import db
+from flask_login import UserMixin
 
 from utils import log
 
 
-class User(db.Model, ModelMixin):
+class User(db.Model, ModelMixin, UserMixin):
     __tablename__ = 'users'
     # 定义字段
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30))
     password = db.Column(db.String(50))
     email = db.Column(db.String(30))
+    nickname = db.Column(db.String(30))
     avatar = db.Column(db.String(255))
     qq = db.Column(db.String(20))
     signature = db.Column(db.String(255))
@@ -31,6 +33,7 @@ class User(db.Model, ModelMixin):
         self.username = form.get('username', '')
         self.password = form.get('password', '')
         self.email = form.get('email', '')
+        self.nickname = form.get('nickname', '')
         self.avatar = form.get('avatar', '')
         self.qq = form.get('qq', '')
         self.signature = form.get('signature', '')
@@ -55,50 +58,13 @@ class User(db.Model, ModelMixin):
         salt_pwd = self.sha1ed_password(sha1_pwd + salt)
         return salt_pwd
 
-    def valid_username(self):
-        return User.query.filter_by(username=self.username).first() is None
-
     def is_admin(self):
         return self.role == 1
 
-    def valid(self):
-        """
-        验证 注册用户的 合法性
-        """
-        valid_username = self.valid_username()
-        valid_username_len = len(self.username) >= 6
-        valid_password_len = len(self.password) >= 6
-        msgs = []
-        if not valid_username:
-            message = '用户名已存在'
-            msgs.append(message)
-        elif not valid_username_len:
-            message = '用户名长度不小于 6'
-            msgs.append(message)
-        elif not valid_password_len:
-            message = '密码长度不小于 6'
-            msgs.append(message)
-        status = valid_username and valid_username_len and valid_password_len
-        if status:
-            self.password = self.salted_password(self.password)
-        return status, msgs
-
     def validate_login(self):
-        msgs = []
-        valid_username = True
-        valid_password = True
         user = User.query.filter_by(username=self.username).first()
-        self.password = self.salted_password(self.password)
-        if user is None:
-            valid_username = False
-            message = '用户名不存在'
-            msgs.append(message)
-        elif user.password != self.password:
-            valid_password = False
-            message = '密码错误'
-            msgs.append(message)
-        status = valid_username and valid_password
-        return status, msgs
+        pwd = self.salted_password(self.password)
+        return user is not None and pwd == user.password
 
     def validate_auth(self, form):
         msgs = []

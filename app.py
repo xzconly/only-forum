@@ -1,6 +1,10 @@
 from flask import Flask
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
+
+from utils import log
 
 
 from models import db
@@ -17,8 +21,21 @@ from models.node import Node
 
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 manager = Manager(app)
 
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'user.login'
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    log(user_id)
+    return User.query.get(user_id)
+
+
+login_manager.init_app(app)
 
 # 自定义过滤器
 # 过滤器的名字是函数名
@@ -37,6 +54,7 @@ def configured_app():
     import config
     app.secret_key = config.secret_key
     app.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
+    app.config['SECRET_KEY'] = config.config_secret_key
     # 初始化 db
     db.init_app(app)
     # 注册路由

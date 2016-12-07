@@ -1,4 +1,5 @@
 from routes import *
+from flask_login import login_required
 
 
 main = Blueprint('index', __name__)

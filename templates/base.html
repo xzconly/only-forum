@@ -1,54 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
-    {% block scripts %}
-        <!--<link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.css" rel="stylesheet">-->
-        <!-- Bootstrap core CSS -->
-        <link href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Optional Bootstrap Theme -->
-        <link href="data:text/css;charset=utf-8," data-href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" rel="stylesheet" id="bs-theme-stylesheet">
-        <script src="/static/js/jquery-3.0.0.js"></script>
-    {% endblock %}
-</head>
-<body>
-<div id="base-top">
-    {% block top %}
-        <div class="row">
-            <div class="col-xs-2">
-                <span><a href="{{ url_for('index.index') }}">首页</a></span>
-            </div>
-            <div class="col-xs-2">
-                <span><a href="{{ url_for('question.index') }}">问答</a></span>
-            </div>
-            <div class="col-xs-2">
-                <span><a href="{{ url_for('topic.index') }}">论坛</a></span>
-            </div>
-            <div class="col-xs-2">
-                <span><a href="{{ url_for('node.index') }}">版块</a></span>
-            </div>
-            <div class="col-xs-4">
-                <span><a href="{{ url_for('user.profile') }}">个人中心</a></span>
-            </div>
+{% extends "bootstrap/base.html" %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <li><a class="navbar-brand" href="{{ url_for('index.index') }}">首页</a></li>
         </div>
-    {% endblock %}
-</div>
-<div id="base-content">
-    {% block content %}
-        公共内容
-    {% endblock %}
-</div>
-<div id="base-bottom">
-    {% block footer %}
-        <div class="wrapper row5">
-            <div id="copyright" class="hoc clear">
-                <!-- ################################################################################################ -->
-                <p class="fl_left">Copyright &copy; 2016 - All Rights Reserved - <a href="#">zconly.cc</a></p>
-                <!-- ################################################################################################ -->
-            </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('question.index') }}">问答</a></li>
+                <li><a href="{{ url_for('topic.index') }}">论坛</a></li>
+                <li><a href="{{ url_for('node.index') }}">版块</a></li>
+                <li><a href="{{ url_for('user.profile') }}">个人中心</a></li>
+            </ul>
         </div>
-    {% endblock %}
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}

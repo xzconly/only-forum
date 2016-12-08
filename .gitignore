@@ -6,6 +6,5 @@ migrations/
 __pycache__/
 models/__pycache__/
 routes/__pycache__/
-static/
 config.py
 db.sqlite

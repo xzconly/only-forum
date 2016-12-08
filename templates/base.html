@@ -19,7 +19,7 @@
                 <li><a href="{{ url_for('topic.index') }}">论坛</a></li>
                 <li><a href="{{ url_for('node.index') }}">版块</a></li>
                 {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('user.profile', user_id=current_user.id) }}"><img src="{{ url_for('user.uploaded_file', filename=current_user.avatar) }}" width="50" height="50"/></a></li>
+                    <li><a href="{{ url_for('user.profile', user_id=current_user.id) }}"><img src="{{ url_for('user.uploaded_file', filename=current_user.get_avatar_thumb(50)) }}" /></a></li>
                 {% endif %}
 
             </ul>

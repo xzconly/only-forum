@@ -34,21 +34,6 @@ def date_time(timestamp):
     return time.strftime(fmt, value)
 
 
-@app.template_filter()
-def thumb_img(img, img_size=100):
-    from PIL import Image
-    from flask import url_for
-    import os
-
-    size = img_size, img_size
-    file, ext = os.path.splitext(img)
-    im = Image.open(img)
-    im.thumbnail(size)
-    thumb_img_name = file + '_thumb' + ext
-    im.save(thumb_img_name)
-    return url_for('user.uploaded_file', filename=thumb_img_name)
-
-
 def configured_app():
     # 这一句是套路, 不加会有 warning
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -117,6 +102,9 @@ def register_routes(app):
 
     from routes.question import main as routes_question
     app.register_blueprint(routes_question, url_prefix='/question')
+
+    from routes.blog import main as routes_blog
+    app.register_blueprint(routes_blog, url_prefix='/blog')
 
 
 # 自定义的命令行命令用来运行服务器

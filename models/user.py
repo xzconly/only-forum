@@ -2,6 +2,8 @@ from . import ModelMixin, utc
 from . import db
 from flask_login import UserMixin
 
+from utils import log
+
 
 class User(db.Model, ModelMixin, UserMixin):
     __tablename__ = 'users'
@@ -64,6 +66,23 @@ class User(db.Model, ModelMixin, UserMixin):
         user = User.query.filter_by(username=self.username).first()
         pwd = self.salted_password(self.password)
         return user is not None and pwd == user.password
+
+    def get_avatar_thumb(self, img_size):
+        from PIL import Image
+        import os
+        import config
+        img = os.path.abspath(config.uploads_avatar_dir + self.avatar)
+        log('img', img)
+        size = img_size, img_size
+        file, ext = os.path.splitext(self.avatar)
+        thumb_img_name = file + '_thumb' + ext
+        thumb_path = config.uploads_avatar_dir + thumb_img_name
+        log('dir, img', thumb_path, thumb_img_name)
+        if not os.path.exists(thumb_path):
+            im = Image.open(img)
+            im.thumbnail(size)
+            im.save(thumb_path)
+        return thumb_img_name
 
     def validate_auth(self, form):
         msgs = []

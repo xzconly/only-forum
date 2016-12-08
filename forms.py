@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, BooleanField, SelectField, \
-    SubmitField
+    SubmitField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import ValidationError
+from flask_pagedown.fields import PageDownField
 
 from models.user import User
 
@@ -29,3 +30,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('密码')
     remember_me = BooleanField('保持登录')
     submit = SubmitField('登录')
+
+
+class BlogForm(FlaskForm):
+    title = StringField('标题', validators=[DataRequired('标题不能为空')])
+    tag = StringField('标签')
+    content = TextAreaField('正文', validators=[DataRequired('内容不能为空')])
+    user_id = HiddenField('user_id')
+    submit = SubmitField('发表博客')

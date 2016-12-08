@@ -13,6 +13,7 @@ class Comment(db.Model, ModelMixin):
     # 外键
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
+    blog_id = db.Column(db.Integer, db.ForeignKey('blogs.id'))
 
     def __init__(self, form):
         self.content = form.get('content', '')

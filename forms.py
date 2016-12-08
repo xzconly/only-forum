@@ -3,7 +3,6 @@ from wtforms import StringField, PasswordField, TextAreaField, BooleanField, Sel
     SubmitField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms import ValidationError
-from flask_pagedown.fields import PageDownField
 
 from models.user import User
 

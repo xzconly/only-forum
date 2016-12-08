@@ -26,6 +26,10 @@ class Blog(db.Model, ModelMixin):
         self.tag = form.get('tag', '')
         self.user_id = int(form.get('user_id', 0))
 
+    def set_thumb(self):
+        self.thumb = Blog.random_thumb()
+        # Todo  从 content 中抓取第一张图片作为 缩略图 （如果有）
+
     def upvote(self):
         self.upvotes += 1
         self.save()
@@ -33,3 +37,9 @@ class Blog(db.Model, ModelMixin):
     def add_views(self):
         self.views += 1
         self.save()
+
+    @staticmethod
+    def random_thumb():
+        import random
+        thumb = random.randint(1, 10)
+        return str(thumb) + '.jpg'

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}博客展示{% endblock %}
+
+{% block page_content %}
+    <h3>精彩博文</h3>
+    <div class="row">
+        {% for blog in blogs %}
+            <div class="col-md-4 col-sm-6  blog">
+                <a class="blog-box" href="{{ url_for('blog.detail', blog_id=blog.id) }}">
+                    <div class="blog-img">
+                        <img alt=" " src="{{ url_for('blog.thumb_img', filename=blog.thumb) }}">
+                    </div>
+                    <div class="blog-body">
+                        <span class="blog-title" data-toggle="tooltip" data-placement="bottom" title="">{{ blog.title }}</span>
+                    </div>
+                    <div class="blog-footer">
+                        <span class="blog-per-num pull-left">
+                            {{ blog.views }}
+                        </span>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/blog_index.css', _external=True) }}">
+{% endblock %}
+

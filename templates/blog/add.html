@@ -15,6 +15,7 @@
 </div>
 <div class="col-md-10">
     <form class="form form-horizontal" method="post" role="form" action="{{ url_for('blog.add') }}">
+        {{ form.hidden_tag() }}
         {{ wtf.form_field(form.title) }}
         {{ wtf.form_field(form.tag, placeholder="为这篇博客添加一个标签吧") }}
         {{ wtf.form_field(form.content, class="ckeditor") }}

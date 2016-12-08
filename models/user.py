@@ -53,11 +53,9 @@ class User(db.Model, ModelMixin, UserMixin):
         self.password = form.get('password', '')
         self.email = form.get('email', '')
         self.nickname = form.get('nickname', '')
-        self.avatar = form.get('avatar', '')
+        self.avatar = form.get('avatar', 'default.png')
         self.qq = form.get('qq', '')
         self.signature = form.get('signature', '')
-        self.created_time = utc()
-        self.updated_time = utc()
 
     def is_admin(self):
         return self.role == 1
@@ -72,12 +70,10 @@ class User(db.Model, ModelMixin, UserMixin):
         import os
         import config
         img = os.path.abspath(config.uploads_avatar_dir + self.avatar)
-        log('img', img)
         size = img_size, img_size
         file, ext = os.path.splitext(self.avatar)
         thumb_img_name = file + '_thumb' + ext
         thumb_path = config.uploads_avatar_dir + thumb_img_name
-        log('dir, img', thumb_path, thumb_img_name)
         if not os.path.exists(thumb_path):
             im = Image.open(img)
             im.thumbnail(size)

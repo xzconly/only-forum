@@ -14,9 +14,11 @@
     <h1>发表博客</h1>
 </div>
 <div class="col-md-10">
-    {{ wtf.form_field(form.title) }}
-    {{ wtf.form_field(form.tag, placeholder="为这篇博客添加一个标签吧") }}
-    {{ wtf.form_field(form.content, class="ckeditor") }}
-    {{ wtf.form_field(form.submit) }}
+    <form class="form form-horizontal" method="post" role="form" action="{{ url_for('blog.add') }}">
+        {{ wtf.form_field(form.title) }}
+        {{ wtf.form_field(form.tag, placeholder="为这篇博客添加一个标签吧") }}
+        {{ wtf.form_field(form.content, class="ckeditor") }}
+        {{ wtf.form_field(form.submit) }}
+    </form>
 </div>
 {% endblock %}

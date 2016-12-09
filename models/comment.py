@@ -17,7 +17,8 @@ class Comment(db.Model, ModelMixin):
 
     def __init__(self, form):
         self.content = form.get('content', '')
-        self.topic_id = int(form.get('topic_id', 0))
+        self.topic_id = int(form.get('topic_id', -1))
+        self.blog_id = int(form.get('blog_id', -1))
         self.user_id = int(form.get('user_id', 0))
 
     def _update(self, form):

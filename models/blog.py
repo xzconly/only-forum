@@ -20,23 +20,34 @@ class Blog(db.Model, ModelMixin):
     # 定义关系
     comments = db.relationship('Comment', backref='blog')
 
+    @classmethod
+    def upvote(cls, blog_id):
+        blog = cls.query.get(blog_id)
+        blog.upvotes += 1
+        blog.save()
+
+    @classmethod
+    def add_views(cls, blog_id):
+        blog = cls.query.get(blog_id)
+        blog.views += 1
+        blog.save()
+
     def __init__(self, form):
         self.title = form.get('title', '')
         self.content = form.get('content', '')
         self.tag = form.get('tag', '')
         self.user_id = int(form.get('user_id', 0))
 
+    def _update(self, form):
+        self.title = form.get('title', '')
+        self.content = form.get('content', '')
+        self.tag = form.get('tag', '')
+        self.updated_time = utc()
+        self.save()
+
     def set_thumb(self):
         self.thumb = Blog.random_thumb()
         # Todo  从 content 中抓取第一张图片作为 缩略图 （如果有）
-
-    def upvote(self):
-        self.upvotes += 1
-        self.save()
-
-    def add_views(self):
-        self.views += 1
-        self.save()
 
     @staticmethod
     def random_thumb():

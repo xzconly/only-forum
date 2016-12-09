@@ -37,5 +37,5 @@ class ModelMixin(object):
 
     def remove(self):
         # 逻辑删除
-        self.deleted = True
+        self.deleted = 1
         self.save()

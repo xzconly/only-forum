@@ -26,6 +26,7 @@ class User(db.Model, ModelMixin, UserMixin):
     comments = db.relationship('Comment', backref='user')
     questions = db.relationship('Question', backref='user')
     answers = db.relationship('Answer', backref='user')
+    blogs = db.relationship('Blog', backref='user')
 
     @classmethod
     def sha1ed_password(cls, pwd):

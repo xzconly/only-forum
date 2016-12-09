@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{# 直接写内容 #}
+{% block title %}编辑博客{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <script src="//cdn.ckeditor.com/4.5.11/standard/ckeditor.js"></script>
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>编辑博客</h1>
+</div>
+<div class="col-md-10">
+    <form class="form form-horizontal" method="post" role="form" action="{{ url_for('blog.edit', blog_id=blog.id) }}">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.title, value=blog.title) }}
+        {{ wtf.form_field(form.tag, value=blog.tag, placeholder="为这篇博客添加一个标签吧") }}
+        {{ wtf.form_field(form.content, class="ckeditor") }}
+        {{ wtf.form_field(form.submit) }}
+    </form>
+</div>
+{% endblock %}

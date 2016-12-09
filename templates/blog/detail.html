@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}博客文章{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-md-2">{{ blog.title }}</div>
+        <div class="col-md-1">{{ blog.user.username }}</div>
+        <div class="col-md-1">浏览：{{ blog.views }}</div>
+        <div class="col-md-2">{{ blog.created_time | date_time }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">标签：</div>
+        <div class="col-md-2">{{ blog.tag }}</div>
+    </div>
+    <div class="row">
+        {{ blog.content | safe }}
+    </div>
+    <div class="row">
+        <div class="col-md-1"><button class="btn btn-primary" id="upvote_blog">点赞</button></div>
+        <div class="col-md-1">赞：<span id="vote_num">{{ blog.upvotes }}</span></div>
+    </div>
+    {% for comment in comments %}
+    <div class="row">
+        <div class="col-md-2">{{ comment.content }}</div>
+        <div class="col-md-2">{{ comment.user.username }}</div>
+        <div class="col-md-2">{{ comment.created_time | date_time }}</div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+    $(document).ready(function () {
+        $('#upvote_blog').on('click', function () {
+            var blog_id = $('#blog_id').val()
+            var user_id = $('#user_id').val()
+            var data = {
+                'user_id': user_id,
+                'blog_id': blog_id
+            }
+
+            $.ajax({
+                url: '{{ url_for('blog.upvote') }}',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                success: function (r) {
+                    if (r.status == 1) {
+                        $('#vote_num').text(r.vote_num)
+                    } else if (r.status == 0) {
+                        alert('您已点过赞')
+                    }
+                },
+                error: function () {
+                    console.log('点赞失败');
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}

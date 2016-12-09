@@ -17,6 +17,7 @@ from models.comment import Comment
 from models.question import Question
 from models.answer import Answer
 from models.node import Node
+from models.anonymous import Anonymous
 
 
 app = Flask(__name__)
@@ -58,6 +59,7 @@ def configure_login(app):
     login_manager = LoginManager()
     login_manager.session_protection = 'strong'
     login_manager.login_view = 'user.login'
+    login_manager.anonymous_user = Anonymous
 
     login_manager.init_app(app)
 

@@ -88,9 +88,11 @@ def upvote():
         vote.save()
         blog_id = int(form.get('blog_id', 0))
         Blog.upvote(blog_id)
+        blog = Blog.query.get(blog_id)
+        upvotes = blog.upvotes
         response = dict(
             status=1,
-            vote_num = Blog.query.get(blog_id).upvotes,
+            vote_num = upvotes,
             msg='点赞成功'
         )
     else:

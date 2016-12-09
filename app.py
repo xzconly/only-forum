@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import render_template
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
@@ -51,6 +52,8 @@ def configured_app():
     register_routes(app)
     # 配置日志
     configure_log(app)
+    # 自定义 404
+    configure_errorhandler(app)
     # 返回配置好的 app 实例
     return app
 
@@ -107,6 +110,12 @@ def register_routes(app):
 
     from routes.blog import main as routes_blog
     app.register_blueprint(routes_blog, url_prefix='/blog')
+
+
+def configure_errorhandler(app):
+    @app.errorhandler(404)
+    def error404(e):
+        return render_template('404.html')
 
 
 # 自定义的命令行命令用来运行服务器

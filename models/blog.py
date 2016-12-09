@@ -21,6 +21,13 @@ class Blog(db.Model, ModelMixin):
     comments = db.relationship('Comment', backref='blog')
 
     @classmethod
+    def new(cls, form):
+        blog = cls(form)
+        # 抓取/设置 默认缩略图
+        blog.set_thumb()
+        blog.save()
+
+    @classmethod
     def upvote(cls, blog_id):
         blog = cls.query.get(blog_id)
         blog.upvotes += 1
@@ -48,6 +55,9 @@ class Blog(db.Model, ModelMixin):
     def set_thumb(self):
         self.thumb = Blog.random_thumb()
         # Todo  从 content 中抓取第一张图片作为 缩略图 （如果有）
+
+    def is_owner(self, user_id):
+        return self.user_id == user_id
 
     @staticmethod
     def random_thumb():

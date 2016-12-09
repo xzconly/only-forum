@@ -8,31 +8,12 @@ from flask import flash
 from flask import send_from_directory
 from flask import session
 from flask import url_for
+from flask_login import login_required, current_user
 from sqlalchemy import desc
 
 from functools import wraps
 
 from models.user import User
-
-
-# 通过 session 来获取当前登录的用户
-def current_user():
-    user_id = session.get('user_id', '')
-    u = User.query.get(user_id)
-    return u
-
-
-# 这个参数 f 实际上就是路由函数
-# def login_required(f):
-#     @wraps(f)
-#     def function(*args, **kwargs):
-#         if current_user() is None:
-#             # 用户未登录, 重定向到登录页面
-#             return redirect(url_for('user.login'))
-#         else:
-#             # 用户已经登录, 扔给路由函数处理
-#             return f(*args, **kwargs)
-#     return function
 
 
 def admin_required(f):
@@ -50,9 +31,16 @@ def admin_required(f):
 
 # 用于 路由添加统一验证
 def require_login():
-    u = current_user()
-    if u is None:
+    if current_user.id == '':
+        flash('请先登录')
         return redirect(url_for('user.login'))
+
+
+# 博客 修改/删除 权限验证
+def blog_auth(blog):
+    if not blog.is_owner(current_user.id):
+        flash('您没有权限进行此操作')
+        flask.abort(404)
 
 
 # 这是一个要求管理员权限的函数

@@ -10,12 +10,6 @@ main = Blueprint('node', __name__)
 Model = Node
 
 
-# 一次性给蓝图中的每个路由加上管理权限验证
-# 这样就不用手动去给每个函数分别加这个验证了
-# (login_required 的方式就是手动一个个加)
-main.before_request(require_login)
-
-
 @main.route('/')
 def index():
     model_list = Model.query.filter_by(deleted=0).all()

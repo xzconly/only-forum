@@ -17,6 +17,13 @@ def index():
     return render_template('/blog/index.html', blogs=blog_list)
 
 
+@main.route('/my_blogs')
+@login_required
+def user_blog():
+    blog_list = Blog.query.filter_by(user_id=current_user.id, deleted=0).all()
+    return render_template('/blog/user_index.html', blogs=blog_list)
+
+
 @main.route('/<int:blog_id>')
 def detail(blog_id):
     blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id, topic_id=-1)
@@ -40,7 +47,7 @@ def add_comment(blog_id):
 @login_required
 def new():
     blog_form = BlogForm(user_id=current_user.id)
-    return render_template('blog/add.html', form=blog_form)
+    return render_template('/blog/add.html', form=blog_form)
 
 
 @main.route('/add', methods=['POST'])
@@ -60,7 +67,7 @@ def edit(blog_id):
     blog_auth(blog)
     blog_form = BlogForm(user_id=current_user.id)
     blog_form.content.data = blog.content
-    return render_template('blog/edit.html', form=blog_form, blog=blog)
+    return render_template('/blog/edit.html', form=blog_form, blog=blog)
 
 
 @main.route('/edit/<int:blog_id>', methods=['POST'])
@@ -96,7 +103,7 @@ def upvote():
         upvotes = blog.upvotes
         response = dict(
             status=1,
-            vote_num = upvotes,
+            vote_num=upvotes,
             msg='点赞成功'
         )
     else:

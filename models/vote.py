@@ -18,5 +18,4 @@ class Vote(db.Model, ModelMixin):
 
     def is_voted(self):
         vote = Vote.query.filter_by(user_id=self.user_id).first()
-        log('vote, self', vote, self)
         return vote is not None and vote.blog_id == self.blog_id

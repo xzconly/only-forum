@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}我的博客{% endblock %}
+
+{% block page_content %}
+    <ul class="posts">
+        {% for blog in blogs %}
+        <li class="post">
+            <div class="post-thumbnail">
+                <a href="{{ url_for('user.profile', user_id=blog.user_id) }}">
+                    <img class="img-rounded" width="25" height="25" src="{{ url_for('user.uploaded_file', filename=blog.user.avatar) }}">
+                </a>
+            </div>
+            <div class="post-content">
+                <div class="post-date">{{ blog.created_time | date_time }}</div>
+                <div class="post-author"><a href="{{ url_for('user.profile', user_id=blog.user_id) }}">{{ blog.user.username }}</a></div>
+                <div class="post-body">
+                    {{ blog.title }}
+                </div>
+                <div class="post-footer">
+                    {% if current_user == blog.user %}
+                    <a href="{{ url_for('blog.edit', blog_id=blog.id) }}">
+                        <span class="label label-primary">修改</span>
+                    </a>
+                    <a href="{{ url_for('blog.delete', blog_id=blog.id) }}">
+                        <span class="label label-danger">删除</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

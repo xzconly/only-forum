@@ -11,26 +11,21 @@ main = Blueprint('follow', __name__)
 @login_required
 def follow():
     import json
-    form = request.form
-    Follow.new(form)
-    response = dict(
-        status=1,
-        msg='关注成功',
-    )
-    return json.dumps(response)
-
-
-@main.route('/unfollow', methods=['POST'])
-@login_required
-def unfollow():
-    import json
-    form = request.form
-    follow_id = int(form.get('follow_id', 0))
-    unfollow_id = int(form.get('unfollow_id', 0))
-    Follow.delete(follow_id, unfollow_id)
-
-    response = dict(
-        status=1,
-        msg='关注成功',
-    )
+    follow_ids = request.get_json()
+    result = Follow.handle_follow(follow_ids)
+    if result == 1:
+        response = dict(
+            status=1,
+            msg='关注成功',
+        )
+    elif result == 2:
+        response = dict(
+            status=2,
+            msg='取消关注成功',
+        )
+    elif result == 0:
+        response = dict(
+            status=0,
+            msg='操作失败',
+        )
     return json.dumps(response)

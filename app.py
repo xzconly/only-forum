@@ -18,6 +18,7 @@ from models.comment import Comment
 from models.question import Question
 from models.answer import Answer
 from models.node import Node
+from models.follow import Follow
 from models.anonymous import Anonymous
 
 
@@ -110,6 +111,9 @@ def register_routes(app):
 
     from routes.blog import main as routes_blog
     app.register_blueprint(routes_blog, url_prefix='/blog')
+
+    from routes.follow import main as routes_follow
+    app.register_blueprint(routes_follow, url_prefix='/follow')
 
 
 def configure_errorhandler(app):

@@ -2,6 +2,8 @@ from . import ModelMixin, utc
 from . import db
 from flask_login import UserMixin
 
+from models.follow import Follow
+
 from utils import log
 
 
@@ -136,3 +138,16 @@ class User(db.Model, ModelMixin, UserMixin):
                     setattr(self, key, updated_value)
         self.updated_time = utc()
         self.save()
+
+    def is_followed(self, user_id):
+        """
+        是否已关注 user_id 用户
+        """
+        if self.id == user_id:
+            return 0
+        followed_ids = Follow.query.filter_by(follow_id=self.id).all()
+        is_in = user_id in followed_ids
+        if is_in:
+            return 1
+        else:
+            return 2

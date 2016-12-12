@@ -13,6 +13,40 @@
 {% block scripts %}
     {# super表示不覆盖父模板该block内容 #}
     {{ super() }}
+    <!--<script src="{{ url_for('static', filename='js/follow.js', _external=True) }}"></script>-->
+    <script>
+        $(document).ready(function () {
+            $('#follow-button').on('click', function () {
+                var follow_id = {{ current_user.id }};
+                var followed_id = {{ user.id }};
+                var data = {
+                    follow_id: follow_id,
+                    followed_id: followed_id,
+                };
+
+                var request = {
+                    url: "{{ url_for('follow.follow') }}",
+                    type: "post",
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    success: function(r) {
+                        if (r.status == 1) {
+                            $('#follow-button').html('取消关注')
+                        } else if (r.status == 2) {
+                            $('#follow-button').html('关注')
+                        } else if (r[0].status == 0) {
+                            alert('操作失败')
+                        }
+                    },
+                    error: function(err) {
+                        log('error', err);
+                    }
+                }
+                $.ajax(request);
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -40,8 +74,9 @@
         </tr>
     </table>
 
+    <p><button id="follow-button" class="btn btn-primary" type="button">关注</button></p>
     <p><a href="{{ url_for('user.edit', model_id=user.id) }}" class="btn btn-primary" role="button">修改个人资料</a></p>
-    <p><a href="{{ url_for('user.edit_password', model_id=user.id) }}" class="btn btn-primary   " role="button">修改密码</a></p>
+    <p><a href="{{ url_for('user.edit_password', model_id=user.id) }}" class="btn btn-primary" role="button">修改密码</a></p>
 {% endblock %}
 
 {# footer 不写，则会直接用父模板中的 block footer 内容 #}

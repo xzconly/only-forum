@@ -12,11 +12,33 @@ class Follow(db.Model, ModelMixin):
     deleted = db.Column(db.Integer, default=0)
 
     @classmethod
-    def delete(cls, follow_id, unfollow_id):
-        follows = Follow.query.filter_by(follow_id=follow_id, unfollow_id=unfollow_id).all()
-        for f in follows:
-            f.deleted = 1
-            f.save()
+    def handle_follow(cls, follow_ids):
+        follow_id = follow_ids.get('follow_id', '')
+        followed_id = follow_ids.get('followed_id', '')
+        if follow_id == '' or followed_id == '':
+            return 0
+        follow_id = int(follow_id)
+        followed_id = int(followed_id)
+        follow = Follow.query.filter_by(follow_id=follow_id, followed_id=followed_id).first()
+        # 没有关注过
+        if follow is None:
+            form = dict(
+                follow_id=follow_id,
+                followed_id=followed_id,
+            )
+            Follow.new(form)
+            return 1
+        elif follow is not None:
+            # 取消关注后 重新关注
+            if follow.deleted == 1:
+                follow.deleted = 0
+                follow.save()
+                return 1
+            else:
+                # 取消关注
+                follow.deleted = 1
+                follow.save()
+                return 2
 
     def __init__(self, form):
         self.follow_id = int(form.get('follow_id', 0))

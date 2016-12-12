@@ -17,5 +17,5 @@ class Vote(db.Model, ModelMixin):
         self.blog_id = int(form.get('blog_id', 0))
 
     def is_voted(self):
-        vote = Vote.query.filter_by(user_id=self.user_id).first()
-        return vote is not None and vote.blog_id == self.blog_id
+        vote = Vote.query.filter_by(user_id=self.user_id, blog_id=self.blog_id).first()
+        return vote is not None

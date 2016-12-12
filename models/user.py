@@ -139,15 +139,13 @@ class User(db.Model, ModelMixin, UserMixin):
         self.updated_time = utc()
         self.save()
 
-    def is_followed(self, user_id):
+    def get_follow_status(self, user_id):
         """
         是否已关注 user_id 用户
         """
-        if self.id == user_id:
-            return 0
-        followed_ids = Follow.query.filter_by(follow_id=self.id).all()
-        is_in = user_id in followed_ids
-        if is_in:
-            return 1
+        follow = Follow.query.filter_by(follow_id=self.id, followed_id=user_id).first()
+        if follow is not None and follow.deleted == 0:
+            status = 1
         else:
-            return 2
+            status = 2
+        return status

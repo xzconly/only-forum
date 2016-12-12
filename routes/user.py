@@ -71,7 +71,8 @@ def update_password(model_id):
 @main.route('/profile/<int:user_id>')
 def profile(user_id):
     user = User.query.get(user_id)
-    return render_template('/user/profile.html', user=user)
+    follow_status = current_user.get_follow_status(user_id)
+    return render_template('/user/profile.html', user=user, status=follow_status)
 
 
 @main.route('/upload', methods=['POST'])

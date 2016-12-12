@@ -74,7 +74,11 @@
         </tr>
     </table>
 
-    <p><button id="follow-button" class="btn btn-primary" type="button">关注</button></p>
+    {% if status == 1 %}
+        <p><button id="follow-button" class="btn btn-primary" type="button">取消关注</button></p>
+    {% elif status == 2 %}
+        <p><button id="follow-button" class="btn btn-primary" type="button">关注</button></p>
+    {% endif %}
     <p><a href="{{ url_for('user.edit', model_id=user.id) }}" class="btn btn-primary" role="button">修改个人资料</a></p>
     <p><a href="{{ url_for('user.edit_password', model_id=user.id) }}" class="btn btn-primary" role="button">修改密码</a></p>
 {% endblock %}

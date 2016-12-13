@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}我的粉丝{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>我的粉丝</h1>
+</div>
+<div class="row">
+    {% for user in users %}
+        <div class="col-md-4">
+            {{ user.username }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

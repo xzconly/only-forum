@@ -45,3 +45,9 @@ class BlogCommentForm(FlaskForm):
     topic_id = HiddenField('topic_id')
     blog_id = HiddenField('blog_id')
     submit = SubmitField('发表评论')
+
+
+class ReplyCommentForm(FlaskForm):
+    content = TextAreaField('', validators=[DataRequired('回复内容不能为空')])
+    submit = SubmitField('提交')
+

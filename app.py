@@ -19,6 +19,7 @@ from models.question import Question
 from models.answer import Answer
 from models.node import Node
 from models.follow import Follow
+from models.reply_comment import ReplyComment
 from models.anonymous import Anonymous
 
 

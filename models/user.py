@@ -29,6 +29,7 @@ class User(db.Model, ModelMixin, UserMixin):
     questions = db.relationship('Question', backref='user')
     answers = db.relationship('Answer', backref='user')
     blogs = db.relationship('Blog', backref='user')
+    reply_comments = db.relationship('ReplyComment', backref='user')
 
     @classmethod
     def sha1ed_password(cls, pwd):
@@ -49,6 +50,22 @@ class User(db.Model, ModelMixin, UserMixin):
         sha1_pwd = cls.sha1ed_password(pwd)
         salt_pwd = cls.sha1ed_password(sha1_pwd + salt)
         return salt_pwd
+
+    @classmethod
+    def get_followed(cls, followed):
+        users = []
+        for f in followed:
+            user = User.query.get(f.followed_id)
+            users.append(user)
+        return users
+
+    @classmethod
+    def get_follow(cls, follow):
+        users = []
+        for f in follow:
+            user = User.query.get(f.follow_id)
+            users.append(user)
+        return users
 
     def __init__(self, form):
         super(User, self).__init__()

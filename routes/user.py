@@ -2,6 +2,8 @@ from routes import *
 from flask_login import login_user, login_required
 from forms import RegistrationForm, LoginForm
 
+from models.follow import Follow
+
 from utils import log
 
 
@@ -107,3 +109,19 @@ def uploaded_file(filename):
     # 用这个函数直接返回文件的响应
     import config
     return flask.send_from_directory(config.uploads_avatar_dir, filename)
+
+
+@main.route('/follow')
+@login_required
+def follow():
+    followed = Follow.query.filter_by(follow_id=current_user.id).all()
+    users = User.get_followed(followed)
+    return render_template('/user/follow.html', users=users)
+
+
+@main.route('/followed')
+@login_required
+def followed():
+    follow = Follow.query.filter_by(followed_id=current_user.id).all()
+    users = User.get_follow(follow)
+    return render_template('/user/followed.html', users=users)

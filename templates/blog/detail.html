@@ -22,12 +22,41 @@
         <div class="col-md-1">赞：<span id="vote_num">{{ blog.upvotes }}</span></div>
     </div>
     {% for comment in comments %}
-    <div class="row">
-        <div class="col-md-2">{{ comment.content }}</div>
-        <div class="col-md-2">{{ comment.user.username }}</div>
-        <div class="col-md-2">{{ comment.created_time | date_time }}</div>
-    </div>
+    <table class="table">
+    <tr>
+        <td>{{ comment.content }}</td>
+        <td>{{ comment.user.username }}</td>
+        <td>{{ comment.created_time | date_time }}</td>
+        <td>
+            <button type="button" data-reply-id="{{ comment.id }}" data-reply-user-id="{{ comment.user.id }}" data-reply-username="{{ comment.user.username }}" class="btn btn-default reply">回复</button>
+        </td>
+    </tr>
+    {% for reply in comment.reply_comments %}
+    <tr>
+        <td></td>
+        <td>{{ reply.user.username }} 回复 {{ reply.reply_username }} : {{ reply.content }}</td>
+        <td>{{ reply.created_time | date_time }}</td>
+        <td><button type="button" data-reply-id="{{ reply.id }}" data-reply-user-id="{{ reply.user.id }}" data-reply-username="{{ reply.user.username }}" class="btn btn-default reply">回复</button></td>
+    </tr>
     {% endfor %}
+        <tr>
+            <td></td>
+            <td>
+                <form class="form form-horizontal" style="display: none;" method="post" role="form" action="{{ url_for('blog.add_reply_comment', blog_id=blog.id) }}">
+                    {{ reply_form.hidden_tag() }}
+                    {{ wtf.form_field(reply_form.content, class='reply_content', rows='3', cols='60') }}
+                    <input type="hidden" value="" name="reply_id" class="reply_id">
+                    <input type="hidden" value="" name="reply_user_id" class="reply_user_id">
+                    <input type="hidden" value="" name="reply_username" class="reply_username">
+                    <input type="hidden" value="{{ current_user.id }}" name="user_id">
+                    <input type="hidden" value="{{ comment.id }}" name="comment_id">
+                    {{ wtf.form_field(reply_form.submit) }}
+                </form>
+            </td>
+        </tr>
+    </table>
+    {% endfor %}
+
     <div class="row">
         <div class="col-md-6">
             {{ wtf.quick_form(form) }}
@@ -64,6 +93,20 @@
                 }
             });
         });
-    });
+
+        $('.reply').each(function () {
+            $(this).on('click', function () {
+                var reply_id = $(this).attr('data-reply-id');
+                var reply_user_id = $(this).attr('data-reply-user-id');
+                var reply_username = $(this).attr('data-reply-username');
+                var form = $(this).parent().parent().parent().find('form')
+                form.find('.reply_id').val(reply_id);
+                form.find('.reply_user_id').val(reply_user_id);
+                form.find('.reply_username').val(reply_username);
+                form.find('.reply_content').attr('placeholder','回复@'+reply_username);
+                form.toggle()
+            });
+        });
+    })
     </script>
 {% endblock %}

@@ -1,11 +1,10 @@
 from models.blog import Blog
 from models.comment import Comment
+from models.reply_comment import ReplyComment
 from models.vote import Vote
 from routes import *
 
-from forms import BlogForm, BlogCommentForm
-
-from utils import log
+from forms import BlogForm, BlogCommentForm, ReplyCommentForm
 
 
 main = Blueprint('blog', __name__)
@@ -27,10 +26,11 @@ def user_blog():
 @main.route('/<int:blog_id>')
 def detail(blog_id):
     blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id, topic_id=-1)
+    reply_comment_form = ReplyCommentForm()
     blog = Blog.query.get(blog_id)
     comments = Comment.query.filter_by(blog_id=blog_id).all()
     Blog.add_views(blog_id)
-    return render_template('/blog/detail.html', blog=blog, comments=comments, form=blog_comment_form)
+    return render_template('/blog/detail.html', blog=blog, comments=comments, form=blog_comment_form,reply_form=reply_comment_form)
 
 
 @main.route('/<int:blog_id>', methods=['POST'])
@@ -40,6 +40,16 @@ def add_comment(blog_id):
     if blog_comment_form.validate_on_submit():
         form = request.form
         Comment.new(form)
+        return redirect(url_for('.detail', blog_id=blog_id))
+
+
+@main.route('/add_reply/<int:blog_id>', methods=['POST'])
+@login_required
+def add_reply_comment(blog_id):
+    reply_comment_form = ReplyCommentForm()
+    if reply_comment_form.validate_on_submit():
+        form = request.form
+        ReplyComment.new(form)
         return redirect(url_for('.detail', blog_id=blog_id))
 
 

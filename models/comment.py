@@ -14,6 +14,8 @@ class Comment(db.Model, ModelMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blogs.id'))
+    # 定义关系
+    reply_comments = db.relationship('ReplyComment', backref='comment')
 
     def __init__(self, form):
         self.content = form.get('content', '')

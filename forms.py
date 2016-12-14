@@ -31,6 +31,22 @@ class LoginForm(FlaskForm):
     submit = SubmitField('登录')
 
 
+class ProfileForm(FlaskForm):
+    email = StringField('邮箱', validators=[DataRequired(message='邮箱不能为空'), Email(message='请输入有效的邮箱地址')])
+    avatar = StringField('头像')
+    qq = StringField('qq', validators=[Length(0, 20, message='qq长度不超过20')])
+    signature = StringField('签名')
+    submit = SubmitField('修改')
+
+
+class PasswordForm(FlaskForm):
+    origin_pwd = PasswordField('原密码', validators=[DataRequired()])
+    new_pwd = PasswordField('新密码', validators=[DataRequired(), Length(6, 16, message='密码长度必须在6~16中间'),
+                                               EqualTo('confirm_pwd', message='两次输入密码不一致')])
+    confirm_pwd = PasswordField('确认密码', validators=[DataRequired()])
+    submit = SubmitField('修改')
+
+
 class BlogForm(FlaskForm):
     title = StringField('标题', validators=[DataRequired('标题不能为空')])
     tag = StringField('标签')

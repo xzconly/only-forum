@@ -3,11 +3,13 @@
 {% block title %}博客展示{% endblock %}
 
 {% block page_content %}
+    <div class="page-header">
     <h3>精彩博文</h3>
+    </div>
     <div class="row">
         {% for blog in blogs %}
             <div class="col-md-4 col-sm-6  blog">
-                <a class="blog-box" href="{{ url_for('blog.detail', blog_id=blog.id) }}">
+                <a class="blog-box" href="{{ url_for('blog.detail', blog_id=blog.id) }}" target="_blank">
                     <div class="blog-img">
                         <img alt=" " src="{{ url_for('blog.thumb_img', filename=blog.thumb) }}">
                     </div>

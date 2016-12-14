@@ -1,28 +1,39 @@
 from routes import *
 from flask_login import login_user, login_required
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, ProfileForm, PasswordForm
 
 from models.follow import Follow
 
 from utils import log
 
-
 main = Blueprint('user', __name__)
 
 
-@main.route('/register', methods=['GET', 'POST'])
+@main.route('/register')
+def register_view():
+    register_form = RegistrationForm()
+    return render_template('/user/register.html', form=register_form)
+
+
+@main.route('/register', methods=['POST'])
 def register():
     register_form = RegistrationForm()
     if register_form.validate_on_submit():
         form = request.form
-        user = User(form)
-        user.password = User.salted_password(user.password)
-        user.save()
+        User.new(form)
         return redirect(url_for('.login'))
-    return render_template('/user/register.html', form=register_form)
+    else:
+        flash('注册失败')
+        return redirect(url_for('.register'))
 
 
-@main.route('/login', methods=['GET', 'POST'])
+@main.route('/login')
+def login_view():
+    login_form = LoginForm()
+    return render_template('/user/login.html', form=login_form)
+
+
+@main.route('/login', methods=['POST'])
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
@@ -31,43 +42,50 @@ def login():
         if u.validate_login():
             user = User.query.filter_by(username=u.username).first()
             login_user(user, login_form.remember_me.data)
-            return redirect(url_for('index.index'))
+            return redirect(url_for('blog.index'))
         else:
             flash('用户名或密码错误')
-    return render_template('/user/login.html', form=login_form)
 
 
-@main.route('/edit/<int:model_id>')
+@main.route('/edit/<int:user_id>')
 @login_required
-def edit(model_id):
-    user = User.query.get(model_id)
-    return render_template('/user/edit_profile.html', user=user)
+def edit(user_id):
+    profile_form = ProfileForm()
+    user = User.query.get(user_id)
+    return render_template('/user/edit_profile.html', user=user, form=profile_form)
 
 
-@main.route('/update/<int:model_id>', methods=['POST'])
+@main.route('/edit/<int:user_id>', methods=['POST'])
 @login_required
-def update(model_id):
+def update(user_id):
+    profile_form = ProfileForm()
+    if profile_form.validate_on_submit():
+        form = request.form
+        User.update(user_id, form)
+        return redirect(url_for('.profile', user_id=user_id))
+    else:
+        flash('修改信息失败')
+        return redirect(url_for('.edit', user_id=user_id))
+
+
+@main.route('/edit_password')
+@login_required
+def edit_password():
+    form = PasswordForm()
+    user = current_user
+    return render_template('/user/edit_password.html', user=user, form=form)
+
+
+@main.route('/edit_password', methods=['POST'])
+@login_required
+def update_password():
     form = request.form
-    User.update(model_id, form)
-    return redirect(url_for('.profile', model_id=model_id))
-
-
-@main.route('/edit_password/<int:model_id>')
-@login_required
-def edit_password(model_id):
-    user = User.query.get(model_id)
-    return render_template('/user/edit_password.html', user=user)
-
-
-@main.route('/update_password/<int:model_id>', methods=['POST'])
-@login_required
-def update_password(model_id):
-    form = request.form
-    user = User.query.get(model_id)
-    result = user.update_password(form)
-    if result is not None:
-        return result
-    return redirect(url_for('.profile'))
+    status = current_user.update_password(form)
+    if status:
+        return redirect(url_for('.profile', user_id=current_user.id))
+    else:
+        flash('原密码填写错误')
+        return redirect(url_for('.edit_password'))
 
 
 @main.route('/profile/<int:user_id>')

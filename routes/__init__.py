@@ -56,7 +56,7 @@ def get_user_id():
     获取 user_id
     如果当前未登录，返回 最新用户的 id + 1 值
     """
-    user = current_user()
+    user = current_user
     if user is not None:
         return user.id
     else:

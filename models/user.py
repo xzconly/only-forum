@@ -32,6 +32,12 @@ class User(db.Model, ModelMixin, UserMixin):
     reply_comments = db.relationship('ReplyComment', backref='user')
 
     @classmethod
+    def new(cls, form):
+        user = cls(form)
+        user.password = cls.salted_password(user.password)
+        user.save()
+
+    @classmethod
     def sha1ed_password(cls, pwd):
         """
         sha1 加密密码
@@ -77,6 +83,15 @@ class User(db.Model, ModelMixin, UserMixin):
         self.qq = form.get('qq', '')
         self.signature = form.get('signature', '')
 
+    def _update(self, form):
+        for key in form:
+            if key in self.__dict__:
+                updated_value = form.get(key, '')
+                if updated_value != '':
+                    setattr(self, key, updated_value)
+        self.updated_time = utc()
+        self.save()
+
     def is_admin(self):
         return self.role == 1
 
@@ -100,69 +115,32 @@ class User(db.Model, ModelMixin, UserMixin):
             im.save(thumb_path)
         return thumb_img_name
 
-    def validate_auth(self, form):
-        msgs = []
-        username = form.get('username', '')
-        password = form.get('password', '')
-        password = self.salted_password(password)
-        username_equals = username == self.username
-        password_equals = password == self.password
-        status = username_equals and password_equals
-        if not status:
-            message = '用户名或密码错误'
-            msgs.append(message)
-        return status, msgs
+    def get_follow_status(self, user_id):
+        """
+        是否已关注 user_id 用户
+        """
+        if self.id == user_id:
+            status = 0
+        else:
+            follow = Follow.query.filter_by(follow_id=self.id, followed_id=user_id).first()
+            if follow is not None and follow.deleted == 0:
+                status = 1
+            else:
+                status = 2
+        return status
 
-    def valid_password(self, form):
-        """
-        验证修改的 新密码
-        """
-        msgs = []
-        new_password = form.get('new_password', '')
-        confirm_password = form.get('confirm_password', '')
-        valid_password_len = len(new_password) >= 6
-        valid_confirm_password = new_password == confirm_password
-        if not valid_password_len:
-            message = '新密码长度不小于 6'
-            msgs.append(message)
-        elif not valid_confirm_password:
-            message = '两次输入的密码不一致'
-            msgs.append(message)
-        status = valid_password_len and valid_confirm_password
-        return status, msgs
+    def validate_auth(self, password):
+        password = self.salted_password(password)
+        return password == self.password
 
     def update_password(self, form):
         """
         修改密码
         """
-        auth_status, auth_msgs = self.validate_auth(form)
-        confirm_status, confirm_msgs = self.valid_password(form)
-        if auth_status:
-            if confirm_status:
-                self.password = form.get('new_password', self.password)
-                self.password = self.salted_password(self.password)
-                self.save()
-            else:
-                return ','.join(confirm_msgs)
-        else:
-            return ','.join(auth_msgs)
-
-    def _update(self, form):
-        for key in form:
-            if key in self.__dict__:
-                updated_value = form.get(key, '')
-                if updated_value != '':
-                    setattr(self, key, updated_value)
-        self.updated_time = utc()
-        self.save()
-
-    def get_follow_status(self, user_id):
-        """
-        是否已关注 user_id 用户
-        """
-        follow = Follow.query.filter_by(follow_id=self.id, followed_id=user_id).first()
-        if follow is not None and follow.deleted == 0:
-            status = 1
-        else:
-            status = 2
+        origin_pwd = form.get('origin_pwd')
+        new_pwd = form.get('new_pwd')
+        status = self.validate_auth(origin_pwd)
+        if status:
+            self.password = self.salted_password(new_pwd)
+            self.save()
         return status

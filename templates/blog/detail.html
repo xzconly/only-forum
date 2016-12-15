@@ -3,16 +3,29 @@
 
 {% block title %}博客文章{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/blog_detail.css', _external=True) }}" rel="stylesheet">
+    <style type="text/css">
+        [class*="col-"] {
+          padding: 15px;
+        }
+    </style>
+{% endblock %}
+
 {% block page_content %}
-    <div class="row">
-        <div class="col-md-2">{{ blog.title }}</div>
-        <div class="col-md-1">{{ blog.user.username }}</div>
-        <div class="col-md-1">浏览：{{ blog.views }}</div>
-        <div class="col-md-2">{{ blog.created_time | date_time }}</div>
+    <div class="blog-header">
+        <h1 class="blog-title">{{ blog.title }}</h1>
     </div>
     <div class="row">
-        <div class="col-md-2">标签：</div>
-        <div class="col-md-2">{{ blog.tag }}</div>
+        <div class="col-md-1">{{ blog.user.username }}</div>
+        <div class="col-md-2">{{ blog.created_time | date_time }}</div>
+        <div class="col-md-2">浏览：{{ blog.views }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <p>标签： {{ blog.tag }}</p>
+        </div>
     </div>
     <div class="row">
         {{ blog.content | safe }}
@@ -21,42 +34,49 @@
         <div class="col-md-1"><button class="btn btn-primary" id="upvote_blog">点赞</button></div>
         <div class="col-md-1">赞：<span id="vote_num">{{ blog.upvotes }}</span></div>
     </div>
-    {% for comment in comments %}
-    <table class="table">
-    <tr>
-        <td>{{ comment.content }}</td>
-        <td>{{ comment.user.username }}</td>
-        <td>{{ comment.created_time | date_time }}</td>
-        <td>
-            <button type="button" data-reply-id="{{ comment.id }}" data-reply-user-id="{{ comment.user.id }}" data-reply-username="{{ comment.user.username }}" class="btn btn-default reply">回复</button>
-        </td>
-    </tr>
-    {% for reply in comment.reply_comments %}
-    <tr>
-        <td></td>
-        <td>{{ reply.user.username }} 回复 {{ reply.reply_username }} : {{ reply.content }}</td>
-        <td>{{ reply.created_time | date_time }}</td>
-        <td><button type="button" data-reply-id="{{ reply.id }}" data-reply-user-id="{{ reply.user.id }}" data-reply-username="{{ reply.user.username }}" class="btn btn-default reply">回复</button></td>
-    </tr>
-    {% endfor %}
-        <tr>
-            <td></td>
-            <td>
-                <form class="form form-horizontal" style="display: none;" method="post" role="form" action="{{ url_for('blog.add_reply_comment', blog_id=blog.id) }}">
-                    {{ reply_form.hidden_tag() }}
-                    {{ wtf.form_field(reply_form.content, class='reply_content', rows='3', cols='60') }}
-                    <input type="hidden" value="" name="reply_id" class="reply_id">
-                    <input type="hidden" value="" name="reply_user_id" class="reply_user_id">
-                    <input type="hidden" value="" name="reply_username" class="reply_username">
-                    <input type="hidden" value="{{ current_user.id }}" name="user_id">
-                    <input type="hidden" value="{{ comment.id }}" name="comment_id">
-                    {{ wtf.form_field(reply_form.submit) }}
-                </form>
-            </td>
-        </tr>
-    </table>
-    {% endfor %}
 
+    {% for comment in comments %}
+    <div class="border">
+    <div class="row">
+        <div class="col-md-4">
+            {{ comment.user.username }} : {{ comment.content }}
+        </div>
+        <div class="col-md-2">
+            {{ comment.created_time | date_time }}
+        </div>
+        <div class="col-md-1">
+            <button type="button" data-reply-id="{{ comment.id }}" data-reply-user-id="{{ comment.user.id }}" data-reply-username="{{ comment.user.username }}" class="btn btn-default reply">回复</button>
+        </div>
+    </div>
+    {% for reply in comment.reply_comments %}
+    <div class="row">
+        <div class="col-md-4">
+            {{ reply.user.username }} 回复 {{ reply.reply_username }} : {{ reply.content }}
+        </div>
+        <div class="col-md-2">
+            {{ reply.created_time | date_time }}
+        </div>
+        <div class="col-md-1">
+            <button type="button" data-reply-id="{{ reply.id }}" data-reply-user-id="{{ reply.user.id }}" data-reply-username="{{ reply.user.username }}" class="btn btn-default reply">回复</button>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-offset-1 col-md-6">
+            <form class="form form-horizontal" style="display: none;" method="post" role="form" action="{{ url_for('blog.add_reply_comment', blog_id=blog.id) }}">
+                {{ reply_form.hidden_tag() }}
+                {{ wtf.form_field(reply_form.content, class='reply_content', rows='3', cols='60') }}
+                <input type="hidden" value="" name="reply_id" class="reply_id">
+                <input type="hidden" value="" name="reply_user_id" class="reply_user_id">
+                <input type="hidden" value="" name="reply_username" class="reply_username">
+                <input type="hidden" value="{{ current_user.id }}" name="user_id">
+                <input type="hidden" value="{{ comment.id }}" name="comment_id">
+                {{ wtf.form_field(reply_form.submit) }}
+            </form>
+        </div>
+    </div>
+    <div>
+    {% endfor %}
     <div class="row">
         <div class="col-md-6">
             {{ wtf.quick_form(form) }}

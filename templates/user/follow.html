@@ -20,9 +20,11 @@
 <div class="row">
     {% for user in users %}
     <div class="col-md-4">
-        <img class="img-rounded profile-thumbnail" src="{{ url_for('user.uploaded_file', filename=user.get_avatar_thumb(100)) }}">
+        <a href="{{ url_for('user.profile', user_id=user.id) }}">
+            <img class="img-rounded profile-thumbnail" src="{{ url_for('user.uploaded_file', filename=user.get_avatar_thumb(100)) }}">
+        </a>
         <div class="profile-header">
-            <p>{{ user.username }}</p>
+            <p><a href="{{ url_for('user.profile', user_id=user.id) }}">{{ user.username }}</a></p>
             <p>
                 {% if current_user.get_follow_status(user.id) == 1 and user.get_follow_status(current_user.id) == 1 %}
                 互相关注

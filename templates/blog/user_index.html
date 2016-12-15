@@ -2,20 +2,34 @@
 
 {% block title %}我的博客{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', _external=True) }}">
+{% endblock %}
+
 {% block page_content %}
+    <div class="page-header">
+        <h1>
+            {% if user.id == current_user.id %}
+            我的博客
+            {% else %}
+            {{ user.username }} 的博客
+            {% endif %}
+        </h1>
+    </div>
     <ul class="posts">
         {% for blog in blogs %}
         <li class="post">
             <div class="post-thumbnail">
                 <a href="{{ url_for('user.profile', user_id=blog.user_id) }}">
-                    <img class="img-rounded" width="25" height="25" src="{{ url_for('user.uploaded_file', filename=blog.user.avatar) }}">
+                    <img class="img-rounded" width="40" height="40" src="{{ url_for('user.uploaded_file', filename=blog.user.avatar) }}">
                 </a>
             </div>
             <div class="post-content">
                 <div class="post-date">{{ blog.created_time | date_time }}</div>
                 <div class="post-author"><a href="{{ url_for('user.profile', user_id=blog.user_id) }}">{{ blog.user.username }}</a></div>
                 <div class="post-body">
-                    {{ blog.title }}
+                    <a target="_blank" href="{{ url_for('blog.detail', blog_id=blog.id) }}"><h2>{{ blog.title }}</h2></a>
                 </div>
                 <div class="post-footer">
                     {% if current_user == blog.user %}

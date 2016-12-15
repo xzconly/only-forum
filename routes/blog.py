@@ -16,11 +16,12 @@ def index():
     return render_template('/blog/index.html', blogs=blog_list)
 
 
-@main.route('/my_blogs')
+@main.route('/user_blogs/<int:user_id>')
 @login_required
-def user_blog():
-    blog_list = Blog.query.filter_by(user_id=current_user.id, deleted=0).all()
-    return render_template('/blog/user_index.html', blogs=blog_list)
+def user_blog(user_id):
+    user = User.query.get(user_id)
+    blog_list = user.blogs.filter_by(deleted=0).all()
+    return render_template('/blog/user_index.html', blogs=blog_list, user=user)
 
 
 @main.route('/<int:blog_id>')

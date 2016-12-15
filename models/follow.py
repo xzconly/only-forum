@@ -6,8 +6,8 @@ class Follow(db.Model, ModelMixin):
     __tablename__ = 'follows'
     # 字段定义
     id = db.Column(db.Integer, primary_key=True)
-    follow_id = db.Column(db.Integer)
-    followed_id = db.Column(db.Integer)
+    follow_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_time = db.Column(db.Integer, default=utc())
     deleted = db.Column(db.Integer, default=0)
 

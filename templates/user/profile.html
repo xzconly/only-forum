@@ -75,6 +75,19 @@
     <div class="col-md-3">{{ user.signature }}</div>
 </div>
 <div class="row">
+    <div class="col-md-2">关注: </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('user.followers', user_id=user.id) }}">Followers: <span class="badge">{{ user.followed.filter_by(deleted=0).count() }}</span></a>
+        <a href="{{ url_for('user.following', user_id=user.id) }}">Following: <span class="badge">{{ user.follow.filter_by(deleted=0).count() }}</span></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2">博客: </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('blog.user_blog', user_id=user.id) }}"><span>博客：</span>{{ user.blogs.count() }}</a>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-5">
     {% if status == 1 %}
         <button id="follow-button" class="btn btn-sm btn-primary" type="button">取消关注</button>

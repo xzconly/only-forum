@@ -101,3 +101,8 @@
 	display:block;
 	clear:both
 }
+
+.blog-box .blog-footer a {
+    color: #9b9da2;
+    text-decoration: none;
+}

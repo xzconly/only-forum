@@ -5,5 +5,5 @@ class Anonymous(AnonymousUserMixin):
     __tablename__ = 'anonymous'
 
     def __init__(self):
-        self.id = ''
+        self.id = 0
         self.username = 'Guest'

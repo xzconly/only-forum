@@ -8,14 +8,29 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('blog.user_blog') }}"><p class="navbar-text">我的博客</p></a></li>
-                <li><a href="{{ url_for('question.index') }}"><p class="navbar-text">问答</p></a></li>
-                <li><a href="{{ url_for('topic.index') }}"><p class="navbar-text">论坛</p></a></li>
-                <li><a href="{{ url_for('node.index') }}"><p class="navbar-text">版块</p></a></li>
+                <li><a href="{{ url_for('blog.user_blog', user_id=current_user.id) }}"><p class="navbar-text">我的博客</p></a></li>
+                <li><a href="{{ url_for('user.following', user_id=current_user.id) }}"><p class="navbar-text">我的关注</p></a></li>
+                <li><a href="{{ url_for('user.followers', user_id=current_user.id) }}"><p class="navbar-text">我的粉丝</p></a></li>
+                <!--<li><a href="{{ url_for('question.index') }}"><p class="navbar-text">问答</p></a></li>-->
+                <!--<li><a href="{{ url_for('topic.index') }}"><p class="navbar-text">论坛</p></a></li>-->
+                <!--<li><a href="{{ url_for('node.index') }}"><p class="navbar-text">版块</p></a></li>-->
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
-                    <li><a href="{{ url_for('user.profile', user_id=current_user.id) }}"><img src="{{ url_for('user.uploaded_file', filename=current_user.get_avatar_thumb(50)) }}" /></a></li>
+                    <li><a href="{{ url_for('blog.add') }}"><p class="navbar-text">发表博客</p></a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{{ url_for('user.uploaded_file', filename=current_user.get_avatar_thumb(50)) }}" />
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('user.profile', user_id=current_user.id) }}"><p class="text-center">个人资料</p></a></li>
+                            <li><a href="{{ url_for('user.logout') }}"><p class="text-center">退出登录</p></a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                <li><a href="{{ url_for('user.login') }}"><p class="navbar-text">登录</p></a></li>
+                <li><a href="{{ url_for('user.register') }}"><p class="navbar-text">注册</p></a></li>
                 {% endif %}
             </ul>
         </div>

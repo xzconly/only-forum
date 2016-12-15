@@ -1,5 +1,5 @@
 from routes import *
-from flask_login import login_user, login_required
+from flask_login import login_user, logout_user, login_required
 from forms import RegistrationForm, LoginForm, ProfileForm, PasswordForm
 
 from models.follow import Follow
@@ -45,6 +45,14 @@ def login():
             return redirect(url_for('blog.index'))
         else:
             flash('用户名或密码错误')
+
+
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('您已退出登录')
+    return redirect(url_for('blog.index'))
 
 
 @main.route('/edit/<int:user_id>')
@@ -129,17 +137,19 @@ def uploaded_file(filename):
     return flask.send_from_directory(config.uploads_avatar_dir, filename)
 
 
-@main.route('/follow')
+@main.route('/following/<int:user_id>')
 @login_required
-def follow():
-    followed = Follow.query.filter_by(follow_id=current_user.id).all()
-    users = User.get_followed(followed)
-    return render_template('/user/follow.html', users=users)
+def following(user_id):
+    user = User.query.get(user_id)
+    following = user.follow.filter_by(deleted=0).all()
+    users = User.get_following(following)
+    return render_template('/user/follow.html', users=users, user=user)
 
 
-@main.route('/followed')
+@main.route('/followers/<int:user_id>')
 @login_required
-def followed():
-    follow = Follow.query.filter_by(followed_id=current_user.id).all()
-    users = User.get_follow(follow)
-    return render_template('/user/followed.html', users=users)
+def followers(user_id):
+    user = User.query.get(user_id)
+    followers = user.followed.filter_by(deleted=0).all()
+    users = User.get_followers(followers)
+    return render_template('/user/followed.html', users=users, user=user)

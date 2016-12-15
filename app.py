@@ -64,6 +64,7 @@ def configure_login(app):
     login_manager = LoginManager()
     login_manager.session_protection = 'strong'
     login_manager.login_view = 'user.login'
+    login_manager.login_message = '请先登录'
     login_manager.anonymous_user = Anonymous
 
     login_manager.init_app(app)

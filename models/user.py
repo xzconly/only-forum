@@ -28,8 +28,10 @@ class User(db.Model, ModelMixin, UserMixin):
     comments = db.relationship('Comment', backref='user')
     questions = db.relationship('Question', backref='user')
     answers = db.relationship('Answer', backref='user')
-    blogs = db.relationship('Blog', backref='user')
+    blogs = db.relationship('Blog', backref='user', lazy='dynamic')
     reply_comments = db.relationship('ReplyComment', backref='user')
+    follow = db.relationship('Follow', backref='follower', foreign_keys='Follow.follow_id', lazy='dynamic')
+    followed = db.relationship('Follow', backref='followeder', foreign_keys='Follow.followed_id', lazy='dynamic')
 
     @classmethod
     def new(cls, form):
@@ -58,17 +60,17 @@ class User(db.Model, ModelMixin, UserMixin):
         return salt_pwd
 
     @classmethod
-    def get_followed(cls, followed):
+    def get_following(cls, following):
         users = []
-        for f in followed:
+        for f in following:
             user = User.query.get(f.followed_id)
             users.append(user)
         return users
 
     @classmethod
-    def get_follow(cls, follow):
+    def get_followers(cls, followers):
         users = []
-        for f in follow:
+        for f in followers:
             user = User.query.get(f.follow_id)
             users.append(user)
         return users
@@ -107,7 +109,7 @@ class User(db.Model, ModelMixin, UserMixin):
         img = os.path.abspath(config.uploads_avatar_dir + self.avatar)
         size = img_size, img_size
         file, ext = os.path.splitext(self.avatar)
-        thumb_img_name = file + '_thumb' + ext
+        thumb_img_name = file + '_thumb_' + str(img_size) + ext
         thumb_path = config.uploads_avatar_dir + thumb_img_name
         if not os.path.exists(thumb_path):
             im = Image.open(img)

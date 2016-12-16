@@ -27,7 +27,8 @@ def login():
             user = User.query.filter_by(username=u.username).first()
             login_user(user, login_form.remember_me.data)
             return redirect(url_for('blog.index'))
-    flash('用户名或密码错误')
+        else:
+            flash('用户名或密码错误')
     return render_template('/user/login.html', form=login_form)
 
 
@@ -58,7 +59,8 @@ def edit_password():
         status = current_user.update_password(form.data)
         if status:
             return redirect(url_for('.profile', user_id=current_user.id))
-    flash('原密码错误')
+        else:
+            flash('原密码错误')
     return render_template('/user/edit_password.html', user=current_user, form=form)
 
 

@@ -5,9 +5,9 @@ from . import ModelMixin
 class Node(db.Model, ModelMixin):
     __tablename__ = 'nodes'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String())
-    content = db.Column(db.String())
-    keywords = db.Column(db.String())
+    name = db.Column(db.String(30))
+    content = db.Column(db.Text)
+    keywords = db.Column(db.String(100))
     permit = db.Column(db.Integer, default=0)
     master = db.Column(db.Integer)
     parent_id = db.Column(db.Integer, default=0)

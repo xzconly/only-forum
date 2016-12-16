@@ -6,6 +6,8 @@ from routes import *
 
 from forms import BlogForm, BlogCommentForm, ReplyCommentForm
 
+from utils import log
+
 
 main = Blueprint('blog', __name__)
 
@@ -39,8 +41,7 @@ def detail(blog_id):
 def add_comment(blog_id):
     blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id, topic_id=-1)
     if blog_comment_form.validate_on_submit():
-        form = request.form
-        Comment.new(form)
+        Comment.new(blog_comment_form.data)
         return redirect(url_for('.detail', blog_id=blog_id))
 
 
@@ -66,9 +67,11 @@ def new():
 def add():
     blog_form = BlogForm(user_id=current_user.id)
     if blog_form.validate_on_submit():
-        form = request.form
-        Blog.new(form)
+        Blog.new(blog_form.data)
         return redirect(url_for('.index'))
+    else:
+        flash('添加博客失败')
+        return redirect(url_for('.new'))
 
 
 @main.route('/edit/<int:blog_id>')
@@ -86,9 +89,11 @@ def edit(blog_id):
 def update(blog_id):
     blog_form = BlogForm(user_id=current_user.id)
     if blog_form.validate_on_submit():
-        form = request.form
-        Blog.update(blog_id, form)
+        Blog.update(blog_id, blog_form.data)
         return redirect(url_for('.detail', blog_id=blog_id))
+    else:
+        flash('修改博客失败')
+        return redirect(url_for('.edit', blog_id=blog_id))
 
 
 @main.route('/delete/<int:blog_id>')

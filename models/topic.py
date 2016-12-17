@@ -15,8 +15,6 @@ class Topic(db.Model, ModelMixin):
     # 外键
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     board_id = db.Column(db.Integer, db.ForeignKey('nodes.id'))
-    # 定义关系
-    comments = db.relationship('Comment', backref='topic')
 
     def __init__(self, form):
         self.title = form.get('title', '')

@@ -1,5 +1,4 @@
 from models.topic import Topic
-from models.comment import Comment
 from models.node import Node
 from routes import *
 
@@ -46,11 +45,3 @@ def detail(model_id):
     u = current_user()
     model = Model.query.get(model_id)
     return render_template('/topic/detail.html', topic=model, user_id=u.id)
-
-
-@main.route('/add_comment', methods=['POST'])
-def add_comment():
-    form = request.form
-    topic_id = int(form.get('topic_id', ''))
-    Comment.new(form)
-    return redirect(url_for('.detail', model_id=topic_id))

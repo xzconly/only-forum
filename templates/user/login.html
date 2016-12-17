@@ -7,7 +7,17 @@
 <div class="page-header">
     <h1>登录</h1>
 </div>
+<div class="row">
 <div class="col-md-4">
     {{ wtf.quick_form(form) }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-4" style="padding: 15px;">
+    <span>
+        还没有帐号？点击
+        <a href="{{ url_for('user.register') }}">注册</a>
+    </span>
+</div>
 </div>
 {% endblock %}

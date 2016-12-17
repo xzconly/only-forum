@@ -10,10 +10,12 @@ from utils import log
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('用户名', validators=[DataRequired(), Length(6, 16, message='用户名长度必须在6~16中间')])
+    username = StringField('用户名', validators=[DataRequired(), Length(6, 16, message='用户名长度必须在6~16中间')],
+                           render_kw={'placeholder': '用户名长度在6~16之间'})
     email = StringField('邮箱', validators=[DataRequired(), Email(message='请输入有效的邮箱地址')])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 16, message='密码长度必须在6~16中间'),
-                                               EqualTo('password2', message='两次输入密码不一致')])
+                                               EqualTo('password2', message='两次输入密码不一致')],
+                                               render_kw = {'placeholder': '密码长度在6~16之间'})
     password2 = PasswordField('确认密码', validators=[DataRequired()])
     submit = SubmitField('注册')
 
@@ -35,7 +37,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField('登录')
 
     def validate_username(self, field):
-        log('field', field, field.data)
         user = User.query.filter_by(username=field.data).first()
         if user is None:
             raise ValidationError('用户名不存在')

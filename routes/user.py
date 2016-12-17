@@ -25,7 +25,8 @@ def login():
         u = User(login_form.data)
         if u.validate_login():
             user = User.query.filter_by(username=u.username).first()
-            login_user(user, login_form.remember_me.data)
+            remember_me = login_form.remember_me.data
+            login_user(user, remember=remember_me)
             return redirect(url_for('blog.index'))
         else:
             flash('用户名或密码错误')

@@ -28,7 +28,7 @@ def user_blog(user_id):
 
 @main.route('/<int:blog_id>')
 def detail(blog_id):
-    blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id, topic_id=0)
+    blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id)
     reply_comment_form = ReplyCommentForm()
     blog = Blog.query.get(blog_id)
     comments = Comment.query.filter_by(blog_id=blog_id).all()
@@ -39,7 +39,7 @@ def detail(blog_id):
 @main.route('/<int:blog_id>', methods=['POST'])
 @login_required
 def add_comment(blog_id):
-    blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id, topic_id=0)
+    blog_comment_form = BlogCommentForm(user_id=current_user.id, blog_id=blog_id)
     if blog_comment_form.validate_on_submit():
         Comment.new(blog_comment_form.data)
         return redirect(url_for('.detail', blog_id=blog_id))

@@ -12,14 +12,12 @@ class Comment(db.Model, ModelMixin):
     deleted = db.Column(db.Integer, default=0)
     # 外键
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
     blog_id = db.Column(db.Integer, db.ForeignKey('blogs.id'))
     # 定义关系
     reply_comments = db.relationship('ReplyComment', backref='comment')
 
     def __init__(self, form):
         self.content = form.get('content', '')
-        self.topic_id = int(form.get('topic_id', 0))
         self.blog_id = int(form.get('blog_id', 0))
         self.user_id = int(form.get('user_id', 0))
 

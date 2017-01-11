@@ -130,6 +130,28 @@ def upvote():
     return json.dumps(response)
 
 
+@main.route('/upload', methods=['POST'])
+def upload():
+    import config
+    import uuid
+    import os
+    func_num = request.args.get('CKEditorFuncNum')
+    f = request.files.get('upload')
+    if f:
+        filename = str(uuid.uuid4()) + '.jpg'
+        path = os.path.join(config.uploads_thumb_dir, filename)
+        f.save(path)
+        img_url = url_for('.thumb_img', filename=filename)
+        res = """
+        <script>
+            window.parent.CKEDITOR.tools.callFunction("{}", "{}");
+        </script>
+        """.format(func_num, img_url)
+        response = make_response(res)
+        response.headers["Content-Type"] = "text/html"
+        return response
+
+
 @main.route('/thumb/<filename>')
 def thumb_img(filename):
     import config

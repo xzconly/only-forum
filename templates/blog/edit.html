@@ -6,7 +6,7 @@
 
 {% block head %}
     {{ super() }}
-    <script src="//cdn.ckeditor.com/4.5.11/standard/ckeditor.js"></script>
+    <script src="http://cdn.ckeditor.com/4.6.1/standard-all/ckeditor.js"></script>
 {% endblock %}
 
 {% block page_content %}
@@ -18,8 +18,17 @@
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.title, value=blog.title) }}
         {{ wtf.form_field(form.tag, value=blog.tag, placeholder="为这篇博客添加一个标签吧") }}
-        {{ wtf.form_field(form.content, class="ckeditor") }}
+        {{ wtf.form_field(form.content) }}
         {{ wtf.form_field(form.submit) }}
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        CKEDITOR.replace( 'content', {
+            filebrowserImageUploadUrl: '{{ url_for("blog.upload") }}'
+        });
+    </script>
 {% endblock %}

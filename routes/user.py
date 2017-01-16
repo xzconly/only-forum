@@ -88,7 +88,6 @@ def upload_file():
         msg_dict = dict(
             msg='头像上传成功',
             status=1,
-            filename=filename,
             img_url=url_for('.uploaded_file', filename=filename),
         )
     else:

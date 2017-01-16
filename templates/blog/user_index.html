@@ -22,7 +22,7 @@
         <li class="post">
             <div class="post-thumbnail">
                 <a href="{{ url_for('user.profile', user_id=blog.user_id) }}">
-                    <img class="img-rounded" width="40" height="40" src="{{ url_for('user.uploaded_file', filename=blog.user.avatar) }}">
+                    <img class="img-rounded" width="40" height="40" src="{{ blog.user.avatar }}">
                 </a>
             </div>
             <div class="post-content">

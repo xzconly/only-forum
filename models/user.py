@@ -14,6 +14,7 @@ class User(db.Model, ModelMixin, UserMixin):
     username = db.Column(db.String(30))
     password = db.Column(db.String(50))
     email = db.Column(db.String(30))
+    email_hash = db.Column(db.String(50))
     nickname = db.Column(db.String(30))
     avatar = db.Column(db.String(255))
     qq = db.Column(db.String(20))
@@ -80,18 +81,35 @@ class User(db.Model, ModelMixin, UserMixin):
         self.username = form.get('username', '')
         self.password = form.get('password', '')
         self.email = form.get('email', '')
+        self.email_hash = self.get_email_hash()
         self.nickname = form.get('nickname', '')
-        self.avatar = form.get('avatar', 'default.png')
+        self.avatar = form.get('avatar', self.get_avatar())
         self.qq = form.get('qq', '')
         self.signature = form.get('signature', '')
 
+    def get_email_hash(self):
+        import hashlib
+        s = hashlib.md5(self.email.encode('utf-8'))
+        return s.hexdigest()
+
+    def get_avatar(self, size=50, default='identicon', rating='g'):
+        url = 'https://www.gravatar.com/avatar'
+        avatar = '{}/{}?s={}&d={}&r={}'.format(url, self.email_hash, size, default, rating)
+        return avatar
+
     def _update(self, form):
-        for key in form:
-            if key in self.__dict__:
-                updated_value = form.get(key, '')
-                if updated_value != '':
-                    setattr(self, key, updated_value)
+        self.qq = form.get('qq', '')
+        self.signature = form.get('signature', '')
+        email = form.get('email', '')
+        if self.email != email:
+            self.email = email
+            self.email_hash = self.get_email_hash()
+        avatar = form.get('avatar', '')
+        if avatar == '':
+            avatar = self.get_avatar()
+        self.avatar = avatar
         self.updated_time = utc()
+        log(self.__dict__)
         self.save()
 
     def is_admin(self):
